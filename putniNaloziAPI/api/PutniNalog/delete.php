@@ -17,11 +17,16 @@
     //Get the posted data
     $data = json_decode(file_get_contents("php://input"));
     
-    $putniNalog->id = $data->id;
+    $putniNalog->idPutnogNaloga = $data->idPutnogNaloga;
 
-    if($putniNalog->delete() && in_array($putniNalog->id, $putniNaloziIds_arr)){
-        echo json_encode(array("message" => "Putni nalog je uspijesno obrisan."));
+    if(in_array($putniNalog->idPutnogNaloga, $putniNaloziIds_arr)){
+        $result = $putniNalog->delete();
+        if($result){
+            echo json_encode(array("message" => "Putni nalog je uspijesno obrisan."));
+        }else{
+            echo json_encode(array("message" => $result));
+        }
     }else{
-        echo json_encode(array("message" => "Doslo je do pogreske kod brisanja putnog naloga ili putni nalog sa odabranim identifikatorom ne postoji."));
+        echo json_encode(array("message" => "Putni nalog sa odabranim identifikatorom ne postoji."));
     }
 ?>

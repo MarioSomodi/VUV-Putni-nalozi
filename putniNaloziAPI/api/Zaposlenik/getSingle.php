@@ -7,21 +7,21 @@
     include_once('../../core/initialize.php');
 
     //Instantiate.
-    $zaposlenik = new Zaposlenik($database);
+    $zaposlenikObj = new Zaposlenik($database);
 
     //Check if Id of the item to get is set
-    $zaposlenik->id = isset($_GET['id']) ? $_GET['id'] : die();
-    $zaposlenik->readSingle();
+    $zaposlenikObj->idZaposlenika = isset($_GET['idZaposlenika']) ? $_GET['idZaposlenika'] : die();
+    $zaposlenikObj->readSingle();
 
-    if($zaposlenik->ime != null){ 
-        $zaposlenik_item = array(
-            'id' => $zaposlenik->id,
-            'ime' => $zaposlenik->ime,
-            'prezime' => $zaposlenik->prezime,
-            'odjel' => $zaposlenik->odjel,
-            'uloga' => $zaposlenik->uloga,
+    if($zaposlenikObj->ime != null){ 
+        $zaposlenik = array(
+            'idZaposlenika' => $zaposlenikObj->idZaposlenika,
+            'ime' => $zaposlenikObj->ime,
+            'prezime' => $zaposlenikObj->prezime,
+            'odjel' => $zaposlenikObj->odjel,
+            'uloga' => $zaposlenikObj->uloga,
         );
-        echo json_encode($zaposlenik_item);
+        echo json_encode($zaposlenik);
     }else{
         echo json_encode(array('message' => 'Zaposlenik sa zatrazenim identifikatorom ne postoji.'));
     }

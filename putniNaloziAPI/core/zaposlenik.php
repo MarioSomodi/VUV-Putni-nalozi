@@ -3,8 +3,9 @@
     class Zaposlenik extends Osoba{
         private $connection;
         private $table = 'zaposlenici';
+        private $relationTable = 'zaposlenikputninalog';
 
-        public $id;
+        public $idZaposlenika;
         public $odjel;
         public $uloga;
 
@@ -20,9 +21,9 @@
         }
 
         public function readSingle(){
-            $query = 'SELECT * FROM '.$this->table.' WHERE id = :id LIMIT 1;';
+            $query = 'SELECT * FROM '.$this->table.' WHERE idZaposlenika = :idZaposlenika LIMIT 1;';
             $statment = $this->connection->prepare($query);
-            $statment->bindParam(':id', $this->id);
+            $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
             $statment->execute();
             $row = $statment->fetch(PDO::FETCH_ASSOC);
             $this->ime = $row['ime'];
@@ -56,18 +57,18 @@
             }
         }
         public function update(){
-            $query = 'UPDATE '.$this->table.' SET ime = :ime, prezime = :prezime, odjel = :odjel, uloga = :uloga WHERE id = :id;';
+            $query = 'UPDATE '.$this->table.' SET ime = :ime, prezime = :prezime, odjel = :odjel, uloga = :uloga WHERE idZaposlenika = :idZaposlenika;';
             $statment = $this->connection->prepare($query);
             
             //Sets all properties.
-            $this->id = htmlspecialchars(strip_tags($this->id));
+            $this->idZaposlenika = htmlspecialchars(strip_tags($this->idZaposlenika));
             $this->ime = htmlspecialchars(strip_tags($this->ime));
             $this->prezime = htmlspecialchars(strip_tags($this->prezime));
             $this->odjel = htmlspecialchars(strip_tags($this->odjel));
             $this->uloga = htmlspecialchars(strip_tags($this->uloga));
             
             //Bind all the parameters of the query.
-            $statment->bindParam(':id', $this->id);
+            $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
             $statment->bindParam(':ime', $this->ime);
             $statment->bindParam(':prezime', $this->prezime);
             $statment->bindParam(':odjel', $this->odjel);
@@ -83,15 +84,23 @@
         }
 
         public function delete(){
-            $query = 'DELETE FROM '.$this->table.' WHERE id = :id';
+            $query = '
+                DELETE FROM '.$this->table.' WHERE idZaposlenika = :idZaposlenika1;
+                DELETE FROM '.$this->relationTable.' WHERE idZaposlenika = :idZaposlenika2;
+                DELETE FROM putninalozi 
+                WHERE (
+                    SELECT COUNT(putninalozi.idPutnogNaloga) FROM zaposlenikputninalog 
+                    WHERE zaposlenikputninalog.idPutnogNaloga = putninalozi.idPutnogNaloga
+                ) = 0;
+            ';
             $statment = $this->connection->prepare($query);
-            $this->id = htmlspecialchars(strip_tags($this->id));
-            $statment->bindParam(':id', $this->id);
+            $this->idZaposlenika = htmlspecialchars(strip_tags($this->idZaposlenika));
+            $statment->bindParam(':idZaposlenika1', $this->idZaposlenika);
+            $statment->bindParam(':idZaposlenika2', $this->idZaposlenika);
             if($statment->execute()){
                 return true;
             }else{
-                echo "Error \n".$statment->error;
-                return false;
+                return "Error \n".$statment->error;
             }
         }
     }

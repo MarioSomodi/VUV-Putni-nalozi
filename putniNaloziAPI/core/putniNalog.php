@@ -2,8 +2,9 @@
     class PutniNalog{
         private $connection;
         private $table = 'putninalozi';
+        private $relationTable = 'zaposlenikputninalog';
 
-        public $id;
+        public $idPutnogNaloga;
         public $polaziste;
         public $odrediste;
         public $svrha;
@@ -17,29 +18,36 @@
         }
 
         public function read(){
-            $query = 'SELECT * FROM '.$this->table.';';
+            $query = '
+                SELECT p.*, z.* FROM putninalozi p 
+                JOIN zaposlenikputninalog zp
+                ON p.idPutnogNaloga = zp.idPutnogNaloga
+                JOIN zaposlenici z
+                ON z.idZaposlenika = zp.idZaposlenika;
+            ';
             $statment = $this->connection->prepare($query);
             $statment->execute();
             return $statment;
         }
 
         public function readSingle(){
-            $query = 'SELECT * FROM '.$this->table.' WHERE id = :id LIMIT 1;';
+            $query = '
+                SELECT p.*, z.* FROM putninalozi p 
+                JOIN zaposlenikputninalog zp 
+                ON p.idPutnogNaloga = zp.idPutnogNaloga 
+                JOIN zaposlenici z 
+                ON z.idZaposlenika = zp.idZaposlenika 
+                WHERE zp.idPutnogNaloga = :idPutnogNaloga
+            ';
             $statment = $this->connection->prepare($query);
-            $statment->bindParam(':id', $this->id);
+            $statment->bindParam(':idPutnogNaloga', $this->idPutnogNaloga);
+            // $statment->bindParam(':idPutnogNaloga2', $this->idPutnogNaloga);
             $statment->execute();
-            $row = $statment->fetch(PDO::FETCH_ASSOC);
-            $this->polaziste = $row['polaziste'];
-            $this->odrediste = $row['odrediste'];
-            $this->svrha = $row['svrha'];
-            $this->datumOdlaska = $row['datumOdlaska'];
-            $this->brojDana = $row['brojDana'];
-            $this->zaposlenici = $row['zaposlenici'];
-            $this->odobreno = $row['odobreno'];
+            return $statment;
         }
 
         public function create(){
-            $query = 'INSERT INTO '.$this->table.' SET polaziste = :polaziste, odrediste = :odrediste, svrha = :svrha, datumOdlaska = :datumOdlaska, brojDana = :brojDana, zaposlenici = :zaposlenici, odobreno = :odobreno;';
+            $query = 'INSERT INTO '.$this->table.' SET polaziste = :polaziste, odrediste = :odrediste, svrha = :svrha, datumOdlaska = :datumOdlaska, brojDana = :brojDana, odobreno = :odobreno;';
             $statment = $this->connection->prepare($query);
             
             //Sets all properties.
@@ -48,7 +56,6 @@
             $this->svrha = htmlspecialchars(strip_tags($this->svrha));
             $this->datumOdlaska = htmlspecialchars(strip_tags($this->datumOdlaska));
             $this->brojDana = htmlspecialchars(strip_tags($this->brojDana));
-            $this->zaposlenici = htmlspecialchars(strip_tags($this->zaposlenici));
             $this->odobreno = htmlspecialchars(strip_tags($this->odobreno));
             
             //Bind all the parameters of the query.
@@ -57,7 +64,6 @@
             $statment->bindParam(':svrha', $this->svrha);
             $statment->bindParam(':datumOdlaska', $this->datumOdlaska);
             $statment->bindParam(':brojDana', $this->brojDana);
-            $statment->bindParam(':zaposlenici', $this->zaposlenici);
             $statment->bindParam(':odobreno', $this->odobreno);
             
             //Try to execute the query if it fails return the error/false on success return true.
@@ -70,17 +76,16 @@
         }
 
         public function update(){
-            $query = 'UPDATE '.$this->table.' SET polaziste = :polaziste, odrediste = :odrediste, svrha = :svrha, datumOdlaska = :datumOdlaska, brojDana = :brojDana, zaposlenici = :zaposlenici, odobreno = :odobreno WHERE id = :id;';
+            $query = 'UPDATE '.$this->table.' SET polaziste = :polaziste, odrediste = :odrediste, svrha = :svrha, datumOdlaska = :datumOdlaska, brojDana = :brojDana, odobreno = :odobreno WHERE idPutnogNaloga = :idPutnogNaloga;';
             $statment = $this->connection->prepare($query);
             
             //Sets all properties.
-            $this->id = htmlspecialchars(strip_tags($this->id));
+            $this->idPutnogNaloga = htmlspecialchars(strip_tags($this->idPutnogNaloga));
             $this->polaziste = htmlspecialchars(strip_tags($this->polaziste));
             $this->odrediste = htmlspecialchars(strip_tags($this->odrediste));
             $this->svrha = htmlspecialchars(strip_tags($this->svrha));
             $this->datumOdlaska = htmlspecialchars(strip_tags($this->datumOdlaska));
             $this->brojDana = htmlspecialchars(strip_tags($this->brojDana));
-            $this->zaposlenici = htmlspecialchars(strip_tags($this->zaposlenici));
             $this->odobreno = htmlspecialchars(strip_tags($this->odobreno));
             
             //Bind all the parameters of the query.
@@ -89,9 +94,8 @@
             $statment->bindParam(':svrha', $this->svrha);
             $statment->bindParam(':datumOdlaska', $this->datumOdlaska);
             $statment->bindParam(':brojDana', $this->brojDana);
-            $statment->bindParam(':zaposlenici', $this->zaposlenici);
             $statment->bindParam(':odobreno', $this->odobreno);
-            $statment->bindParam(':id', $this->id);
+            $statment->bindParam(':idPutnogNaloga', $this->idPutnogNaloga);
             
             //Try to execute the query if it fails return the error/false on success return true.
             if($statment->execute()){
@@ -103,15 +107,18 @@
         }
 
         public function delete(){
-            $query = 'DELETE FROM '.$this->table.' WHERE id = :id';
+            $query = '
+                DELETE FROM '.$this->table.' WHERE idPutnogNaloga = :idPutnogNaloga1;
+                DELETE FROM '.$this->relationTable.' WHERE idPutnogNaloga = :idPutnogNaloga2;
+            ';
             $statment = $this->connection->prepare($query);
-            $this->id = htmlspecialchars(strip_tags($this->id));
-            $statment->bindParam(':id', $this->id);
+            $this->idPutnogNaloga = htmlspecialchars(strip_tags($this->idPutnogNaloga));
+            $statment->bindParam(':idPutnogNaloga1', $this->idPutnogNaloga);
+            $statment->bindParam(':idPutnogNaloga2', $this->idPutnogNaloga);
             if($statment->execute()){
                 return true;
             }else{
-                echo "Error \n".$statment->error;
-                return false;
+                return "Error \n".$statment->error;
             }
         }
     }

@@ -17,15 +17,20 @@
     //Get the posted data
     $data = json_decode(file_get_contents("php://input"));
     
-    $zaposlenik->id = $data->id;
+    $zaposlenik->idZaposlenika = $data->idZaposlenika;
     $zaposlenik->ime = $data->ime;
     $zaposlenik->prezime = $data->prezime;
     $zaposlenik->odjel = $data->odjel;
     $zaposlenik->uloga = $data->uloga;
 
-    if($zaposlenik->update() && in_array($zaposlenik->id, $zaposleniciIds_arr)){
-        echo json_encode(array("message" => "Podatci o zaposleniku su uspijesno azurirani."));
+    if(in_array($zaposlenik->idZaposlenika, $zaposleniciIds_arr)){
+        $result = $zaposlenik->update();
+        if($result){
+            echo json_encode(array("message" => "Podatci o zaposleniku su uspijesno azurirani."));
+        }else{
+            echo json_encode(array("message" => $result));
+        }
     }else{
-        echo json_encode(array("message" => "Doslo je do pogreske kod azuriranja podataka zaposlenika ili zaposlenik sa odabranim identifikatorom ne postoji."));
+        echo json_encode(array("message" => "Zaposlenik sa odabranim identifikatorom ne postoji."));
     }
 ?>

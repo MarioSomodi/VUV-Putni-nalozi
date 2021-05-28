@@ -20,13 +20,13 @@
     if($numPutniNalozi > 0){
         while($row = $resultPutniNalozi->fetch(PDO::FETCH_ASSOC)){
             extract($row);
-            array_push($putniNaloziIds_arr, $id);
+            array_push($putniNaloziIds_arr, $idPutnogNaloga);
         }
     }
     if($numZaposlenici > 0){
         while($row = $resultZaposlenici->fetch(PDO::FETCH_ASSOC)){
             extract($row);
-            array_push($zaposleniciIds_arr, $id);
+            array_push($zaposleniciIds_arr, $idZaposlenika);
         }
     }
 ?>
