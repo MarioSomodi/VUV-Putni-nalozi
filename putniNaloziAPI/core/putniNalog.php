@@ -26,8 +26,11 @@
                 ON z.idZaposlenika = zp.idZaposlenika;
             ';
             $statment = $this->connection->prepare($query);
-            $statment->execute();
-            return $statment;
+            if($statment->execute()){
+                return $statment;
+            }else{
+                throw new Exception("Error \n".$statment->error);
+            }
         }
 
         public function readSingle(){
@@ -41,9 +44,11 @@
             ';
             $statment = $this->connection->prepare($query);
             $statment->bindParam(':idPutnogNaloga', $this->idPutnogNaloga);
-            // $statment->bindParam(':idPutnogNaloga2', $this->idPutnogNaloga);
-            $statment->execute();
-            return $statment;
+            if($statment->execute()){
+                return $statment;
+            }else{
+                throw new Exception("Error \n".$statment->error);
+            }
         }
 
         public function create(){
@@ -57,6 +62,10 @@
             $this->datumOdlaska = htmlspecialchars(strip_tags($this->datumOdlaska));
             $this->brojDana = htmlspecialchars(strip_tags($this->brojDana));
             $this->odobreno = htmlspecialchars(strip_tags($this->odobreno));
+
+            if(sizeof($this->zaposlenici) == 0){
+                throw new Exception('Putni nalog mora imati makar jednog zaposlenika.');
+            }
             
             //Bind all the parameters of the query.
             $statment->bindParam(':polaziste', $this->polaziste);
@@ -70,8 +79,7 @@
             if($statment->execute()){
                 return true;
             }else{
-                echo "Error \n".$statment->error;
-                return false;
+                throw new Exception("Error \n".$statment->error);
             }
         }
 
@@ -96,13 +104,16 @@
             $statment->bindParam(':brojDana', $this->brojDana);
             $statment->bindParam(':odobreno', $this->odobreno);
             $statment->bindParam(':idPutnogNaloga', $this->idPutnogNaloga);
+
+            if(sizeof($this->zaposlenici) == 0){
+                throw new Exception('Putni nalog mora imati makar jednog zaposlenika.');
+            }
             
             //Try to execute the query if it fails return the error/false on success return true.
             if($statment->execute()){
                 return true;
             }else{
-                echo "Error \n".$statment->error;
-                return false;
+               throw new Exception("Error \n".$statment->error);
             }
         }
 
@@ -118,7 +129,7 @@
             if($statment->execute()){
                 return true;
             }else{
-                return "Error \n".$statment->error;
+               throw new Exception("Error \n".$statment->error);
             }
         }
     }

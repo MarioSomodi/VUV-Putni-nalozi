@@ -20,11 +20,15 @@
     $zaposlenik->idZaposlenika = $data->idZaposlenika;
     
     if(in_array($zaposlenik->idZaposlenika, $zaposleniciIds_arr)){
-        $result = $zaposlenik->delete();
-        if($result){
+        try{
+            $zaposlenik->delete();
             echo json_encode(array("message" => "Zaposlenik je uspijesno obrisan."));
-        }else{
-            echo json_encode(array("message" => $result));
+        }catch(Exception $e)
+        {
+            echo json_encode(array(
+                "message" => "Doslo je do pogreske kod brisanja zaposlenika.",
+                "error" => $e->getMessage()
+            ));
         }
     }else{
         echo json_encode(array("message" => "Zaposlenik sa odabranim identifikatorom ne postoji."));

@@ -24,11 +24,15 @@
     $zaposlenik->uloga = $data->uloga;
 
     if(in_array($zaposlenik->idZaposlenika, $zaposleniciIds_arr)){
-        $result = $zaposlenik->update();
-        if($result){
+        try{
+            $zaposlenik->update();
             echo json_encode(array("message" => "Podatci o zaposleniku su uspijesno azurirani."));
-        }else{
-            echo json_encode(array("message" => $result));
+        }catch(Exception $e)
+        {
+            echo json_encode(array(
+                "message" => "Doslo je do pogreske kod azuriranja podataka o zaposleniku.",
+                "error" => $e->getMessage()
+            ));
         }
     }else{
         echo json_encode(array("message" => "Zaposlenik sa odabranim identifikatorom ne postoji."));

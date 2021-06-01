@@ -17,14 +17,20 @@
             $query = 'SELECT * FROM '.$this->table.';';
             $statment = $this->connection->prepare($query);
             $statment->execute();
-            return $statment;
+            if($statment->execute()){
+                return $statment;
+            }else{
+                throw new Exception("Error \n".$statment->error);
+            }
         }
 
         public function readSingle(){
             $query = 'SELECT * FROM '.$this->table.' WHERE idZaposlenika = :idZaposlenika LIMIT 1;';
             $statment = $this->connection->prepare($query);
             $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
-            $statment->execute();
+            if(!$statment->execute()){
+                throw new Exception("Error \n".$statment->error);
+            }
             $row = $statment->fetch(PDO::FETCH_ASSOC);
             $this->ime = $row['ime'];
             $this->prezime = $row['prezime'];
@@ -52,8 +58,7 @@
             if($statment->execute()){
                 return true;
             }else{
-                echo "Error \n".$statment->error;
-                return false;
+                throw new Exception("Error \n".$statment->error);
             }
         }
         public function update(){
@@ -78,15 +83,14 @@
             if($statment->execute()){
                 return true;
             }else{
-                echo "Error \n".$statment->error;
-                return false;
+                throw new Exception("Error \n".$statment->error);
             }
         }
 
         public function delete(){
             $query = '
-                DELETE FROM '.$this->table.' WHERE idZaposlenika = :idZaposlenika1;
-                DELETE FROM '.$this->relationTable.' WHERE idZaposlenika = :idZaposlenika2;
+                DELETE FROM '.$this->table.' WHERE idZaposlenika = :idZaposlenika;
+                DELETE FROM '.$this->relationTable.' WHERE idZaposlenika = :idZaposlenika;
                 DELETE FROM putninalozi 
                 WHERE (
                     SELECT COUNT(putninalozi.idPutnogNaloga) FROM zaposlenikputninalog 
@@ -95,12 +99,11 @@
             ';
             $statment = $this->connection->prepare($query);
             $this->idZaposlenika = htmlspecialchars(strip_tags($this->idZaposlenika));
-            $statment->bindParam(':idZaposlenika1', $this->idZaposlenika);
-            $statment->bindParam(':idZaposlenika2', $this->idZaposlenika);
+            $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
             if($statment->execute()){
                 return true;
             }else{
-                return "Error \n".$statment->error;
+                throw new Exception("Error \n".$statment->error);
             }
         }
     }

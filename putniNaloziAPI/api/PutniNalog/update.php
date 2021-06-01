@@ -26,9 +26,18 @@
     $putniNalog->zaposlenici = $data->zaposlenici;
     $putniNalog->odobreno = $data->odobreno;
 
-    if($putniNalog->update() && in_array($putniNalog->id, $putniNaloziIds_arr)){
-        echo json_encode(array("message" => "Putni nalog je uspijesno azuriran."));
+    if(in_array($putniNalog->idPutnogNaloga, $putniNaloziIds_arr)){
+        try{
+            $putniNalog->update();
+            echo json_encode(array("message" => "Putni nalog je uspijesno azuriran."));
+        }catch(Exception $e)
+        {
+            echo json_encode(array(
+                "message" => "Doslo je do pogreske kod azuriranja putnog naloga.",
+                "error" => $e->getMessage()
+            ));
+        }
     }else{
-        echo json_encode(array("message" => "Doslo je do pogreske kod azuriranja putnog naloga ili putni nalog sa odabranim identifikatorom ne postoji."));
+        echo json_encode(array("message" => "Putni nalog sa odabranim identifikatorom ne postoji."));
     }
 ?>

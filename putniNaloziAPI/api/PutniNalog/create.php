@@ -22,9 +22,14 @@
     $putniNalog->zaposlenici = $data->zaposlenici;
     $putniNalog->odobreno = $data->odobreno;
 
-    if($putniNalog->create()){
+    try{
+        $putniNalog->create();
         echo json_encode(array("message" => "Putni nalog je uspijesno kreiran."));
-    }else{
-        echo json_encode(array("message" => "Doslo je do pogreske kod kreiranja putnog naloga."));
+    }catch(Exception $e)
+    {
+        echo json_encode(array(
+            "message" => "Doslo je do pogreske kod kreiranja putnog naloga.",
+            "error" => $e->getMessage()
+        ));
     }
 ?>

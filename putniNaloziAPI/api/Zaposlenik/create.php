@@ -19,9 +19,14 @@
     $zaposlenik->odjel = $data->odjel;
     $zaposlenik->uloga = $data->uloga;
 
-    if($zaposlenik->create()){
-        echo json_encode(array("message" => "Zaposlenik je uspijesno dodan."));
-    }else{
-        echo json_encode(array("message" => "Doslo je do pogreske kod dodavanja zaposlenika."));
+    try{
+        $zaposlenik->create();
+        echo json_encode(array("message" => "Novi zaposlenik je uspijesno dodan."));
+    }catch(Exception $e)
+    {
+        echo json_encode(array(
+            "message" => "Doslo je do pogreske kod dodavanja novoga zaposlenika.",
+            "error" => $e->getMessage()
+        ));
     }
 ?>

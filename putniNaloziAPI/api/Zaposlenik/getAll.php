@@ -13,24 +13,31 @@
     $zaposlenici = array();
 
     //Reading data from DB
-    $resultZaposlenici = $zaposlenikObj->read();
-    $numZaposlenici = $resultZaposlenici->rowCount();
-    
-    //Checking if there is data fill the array if not give an error message.
-    if($numZaposlenici > 0){
-        while($row = $resultZaposlenici->fetch(PDO::FETCH_ASSOC)){
-            extract($row);
-            $zaposlenik = array(
-                'idZaposlenika' => $idZaposlenika,
-                'ime' => $ime,
-                'prezime' => $prezime,
-                'odjel' => $odjel,
-                'uloga' => $uloga,
-            );
-            array_push($zaposlenici, $zaposlenik);
+    try{
+        $resultZaposlenici = $zaposlenikObj->read();
+        $numZaposlenici = $resultZaposlenici->rowCount();
+        
+        //Checking if there is data fill the array if not give an error message.
+        if($numZaposlenici > 0){
+            while($row = $resultZaposlenici->fetch(PDO::FETCH_ASSOC)){
+                extract($row);
+                $zaposlenik = array(
+                    'idZaposlenika' => $idZaposlenika,
+                    'ime' => $ime,
+                    'prezime' => $prezime,
+                    'odjel' => $odjel,
+                    'uloga' => $uloga,
+                );
+                array_push($zaposlenici, $zaposlenik);
+            }
+            echo json_encode($zaposlenici);
+        }else{
+            echo json_encode(array('message' => 'Nema zaposlenika.'));
         }
-        echo json_encode($zaposlenici);
-    }else{
-        echo json_encode(array('message' => 'Nema zaposlenika.'));
-    }
+    }catch(Exception $e){
+        echo json_encode(array(
+            "message" => "Doslo je do pogreske kod ucitavanja podataka o zaposlenicima.",
+            "error" => $e->getMessage()
+        ));
+    };
 ?>

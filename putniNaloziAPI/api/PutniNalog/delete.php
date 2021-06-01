@@ -20,11 +20,15 @@
     $putniNalog->idPutnogNaloga = $data->idPutnogNaloga;
 
     if(in_array($putniNalog->idPutnogNaloga, $putniNaloziIds_arr)){
-        $result = $putniNalog->delete();
-        if($result){
+        try{
+            $putniNalog->delete();
             echo json_encode(array("message" => "Putni nalog je uspijesno obrisan."));
-        }else{
-            echo json_encode(array("message" => $result));
+        }catch(Exception $e)
+        {
+            echo json_encode(array(
+                "message" => "Doslo je do pogreske kod brisanja putnog naloga.",
+                "error" => $e->getMessage()
+            ));
         }
     }else{
         echo json_encode(array("message" => "Putni nalog sa odabranim identifikatorom ne postoji."));
