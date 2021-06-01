@@ -106,5 +106,24 @@
                 throw new Exception("Error \n".$statment->error);
             }
         }
+
+        public function addToPutniNalog($idPutnogNaloga){
+            $query = 'INSERT INTO '.$this->relationTable.' SET idPutnogNaloga = :idPutnogNaloga, idZaposlenika = :idZaposlenika;';
+            $statment = $this->connection->prepare($query);
+            
+            //Sets all properties.
+            $this->idZaposlenika = htmlspecialchars(strip_tags($this->idZaposlenika));
+            
+            //Bind all the parameters of the query.
+            $statment->bindParam(':idPutnogNaloga', $idPutnogNaloga);
+            $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
+            
+            //Try to execute the query if it fails return the error/false on success return true.
+            if($statment->execute()){
+                return true;
+            }else{
+                throw new Exception("Error \n".$statment->error);
+            }
+        }
     }
 ?>

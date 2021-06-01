@@ -9,7 +9,7 @@
     include_once('../../core/initialize.php');
 
     //Include all id's for check if request is valid.
-    include_once('../helpers\getIds.php');
+    include_once('../helpers\getIdsZaposlenici.php');
 
     //Instantiate.
     $zaposlenik = new Zaposlenik($database);

@@ -10,6 +10,7 @@
 
     //Instantiate.
     $putniNalog = new PutniNalog($database);
+    $zaposlenik = new Zaposlenik($database);
 
     //Get the posted data
     $data = json_decode(file_get_contents("php://input"));
@@ -22,9 +23,34 @@
     $putniNalog->zaposlenici = $data->zaposlenici;
     $putniNalog->odobreno = $data->odobreno;
 
+    $allExist = true;
+    include_once('../helpers\getIdsZaposlenici.php');
+    foreach($putniNalog->zaposlenici as $zaposlenikId){
+        if(!in_array($zaposlenikId, $zaposleniciIds_arr)){
+            $allExist = false;
+            break;
+        }
+    }
+
     try{
-        $putniNalog->create();
-        echo json_encode(array("message" => "Putni nalog je uspijesno kreiran."));
+        if($allExist){
+            $putniNalog->create();
+            include_once('../helpers\getIdsPutniNalozi.php');
+            foreach($putniNalog->zaposlenici as $zaposlenikId){
+                $zaposlenik->idZaposlenika = $zaposlenikId;
+                try{
+                    $zaposlenik->addToPutniNalog(end($putniNaloziIds_arr));
+                }catch(Exception $e){
+                    echo json_encode(array(
+                        "message" => "Doslo je do pogreske kod dodavanja zaposlenika putnom nalogu.",
+                        "error" => $e->getMessage()
+                    ));
+                }
+            }
+            echo json_encode(array("message" => "Putni nalog je uspijesno kreiran."));
+        }else{
+            echo json_encode(array("message" => "Jedan od zaposlenika kojeg zelite dodati ne postoji, putni nalog nije kreiran."));
+        }
     }catch(Exception $e)
     {
         echo json_encode(array(

@@ -132,5 +132,15 @@
                throw new Exception("Error \n".$statment->error);
             }
         }
+
+        public function getIds(){
+            $query = 'SELECT idPutnogNaloga FROM '.$this->table.';';
+            $statment = $this->connection->prepare($query);
+            if($statment->execute()){
+                return $statment;
+            }else{
+                throw new Exception("Error \n".$statment->error);
+            }
+        }
     }
 ?>
