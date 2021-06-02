@@ -13,11 +13,13 @@
 
     //Instantiate.
     $putniNalog = new PutniNalog($database);
+    $zaposlenik = new Zaposlenik($database);
+    $putniNalozi = array();
 
     //Get the posted data
     $data = json_decode(file_get_contents("php://input"));
     
-    $putniNalog->id = $data->id;
+    $putniNalog->idPutnogNaloga = $data->idPutnogNaloga;
     $putniNalog->polaziste = $data->polaziste;
     $putniNalog->odrediste = $data->odrediste;
     $putniNalog->svrha = $data->svrha;
@@ -26,16 +28,41 @@
     $putniNalog->zaposlenici = $data->zaposlenici;
     $putniNalog->odobreno = $data->odobreno;
 
+    $check = true;
+    include_once('../helpers\getIdsZaposlenici.php');
+    foreach($putniNalog->zaposlenici as $zaposlenikId){
+        if(!in_array($zaposlenikId, $zaposleniciIds_arr)){
+            $check = false;
+            break;
+        }
+    }
+    
     if(in_array($putniNalog->idPutnogNaloga, $putniNaloziIds_arr)){
-        try{
-            $putniNalog->update();
-            echo json_encode(array("message" => "Putni nalog je uspijesno azuriran."));
-        }catch(Exception $e)
-        {
-            echo json_encode(array(
-                "message" => "Doslo je do pogreske kod azuriranja putnog naloga.",
-                "error" => $e->getMessage()
-            ));
+        if($check){
+            try{
+                $putniNalog->update();
+                $zaposlenik->removeFromPutniNalog($putniNalog->idPutnogNaloga);
+                foreach($putniNalog->zaposlenici as $zaposlenikId){
+                    $zaposlenik->idZaposlenika = $zaposlenikId;
+                    try{
+                        $zaposlenik->addToPutniNalog($putniNalog->idPutnogNaloga);
+                    }catch(Exception $e){
+                        echo json_encode(array(
+                            "message" => "Doslo je do pogreske kod azuriranja zaposlenika putnog naloga.",
+                            "error" => $e->getMessage()
+                        ));
+                    }
+                }
+                echo json_encode(array("message" => "Putni nalog je uspijesno azuriran."));
+            }catch(Exception $e)
+            {
+                echo json_encode(array(
+                    "message" => "Doslo je do pogreske kod azuriranja putnog naloga.",
+                    "error" => $e->getMessage()
+                ));
+            }
+        }else{
+            echo json_encode(array("message" => "Jedan od zaposlenika kojeg zelite dodati ne postoji, putni nalog nije azuriran."));
         }
     }else{
         echo json_encode(array("message" => "Putni nalog sa odabranim identifikatorom ne postoji."));
