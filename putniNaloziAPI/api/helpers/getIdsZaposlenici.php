@@ -1,7 +1,4 @@
 <?php
-    //Include init file.
-    include_once('../../core/initialize.php');
-
     //Instantiate.
     $zaposlenici = new Zaposlenik($database);
 

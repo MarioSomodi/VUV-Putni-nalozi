@@ -1,7 +1,4 @@
 <?php
-    //Include init file.
-    include_once('../../core/initialize.php');
-
      //Instantiate.
     $uloga = new Uloga($database);
 

@@ -8,6 +8,7 @@
         public $idZaposlenika;
         public $odjel;
         public $uloga;
+        public $slobodan;
 
         public function __construct($db){
             $this->connection = $db;
@@ -145,6 +146,25 @@
             
             //Bind all the parameters of the query.
             $statment->bindParam(':idPutnogNaloga', $idPutnogNaloga);
+            
+            //Try to execute the query if it fails return the error/false on success return true.
+            if($statment->execute()){
+                return true;
+            }else{
+                throw new Exception("Error \n".$statment->error);
+            }
+        }
+        public function updateAvailable(){
+            $query = 'UPDATE '.$this->table.' SET slobodan = :slobodan WHERE idZaposlenika = :idZaposlenika;';
+            $statment = $this->connection->prepare($query);
+            
+            //Sets all properties.
+            $this->idZaposlenika = htmlspecialchars(strip_tags($this->idZaposlenika));
+            $this->slobodan = htmlspecialchars(strip_tags($this->slobodan));
+            
+            //Bind all the parameters of the query.
+            $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
+            $statment->bindParam(':slobodan', $this->slobodan);
             
             //Try to execute the query if it fails return the error/false on success return true.
             if($statment->execute()){
