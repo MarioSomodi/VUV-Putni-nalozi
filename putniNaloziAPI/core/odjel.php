@@ -74,17 +74,15 @@
 
         public function delete(){
             $query = '
-                DELETE FROM '.$this->table.' WHERE idZaposlenika = :idZaposlenika;
-                DELETE FROM '.$this->relationTable.' WHERE idZaposlenika = :idZaposlenika;
-                DELETE FROM putninalozi 
-                WHERE (
-                    SELECT COUNT(putninalozi.idPutnogNaloga) FROM zaposlenikputninalog 
-                    WHERE zaposlenikputninalog.idPutnogNaloga = putninalozi.idPutnogNaloga
-                ) = 0;
+                DELETE FROM '.$this->table.' WHERE id = :id;
+                UPDATE zaposlenici SET odjel = 1 WHERE odjel = :id;
             ';
             $statment = $this->connection->prepare($query);
-            $this->idZaposlenika = htmlspecialchars(strip_tags($this->idZaposlenika));
-            $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
+            $this->id = htmlspecialchars(strip_tags($this->id));
+            $statment->bindParam(':id', $this->id);
+            if($this->id == 1){
+                throw new Exception("Nije dozvoljeno obrisati zadani odjel.");
+            }
             if($statment->execute()){
                 return true;
             }else{
