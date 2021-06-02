@@ -9,4 +9,6 @@
     //Load core classes
     require_once(CORE_PATH.DS.'putniNalog.php');
     require_once(CORE_PATH.DS.'zaposlenik.php');
+    require_once(CORE_PATH.DS.'odjel.php');
+    require_once(CORE_PATH.DS.'uloga.php');
 ?>

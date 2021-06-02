@@ -14,7 +14,13 @@
         }
 
         public function read(){
-            $query = 'SELECT * FROM '.$this->table.';';
+            $query = '
+                SELECT z.idZaposlenika, z.ime, z.prezime, o.odjel, u.uloga FROM zaposlenici z
+                JOIN odjeli o 
+                ON z.odjel = o.id
+                JOIN uloge u
+                ON z.uloga = u.id
+            ';
             $statment = $this->connection->prepare($query);
             $statment->execute();
             if($statment->execute()){
@@ -25,7 +31,15 @@
         }
 
         public function readSingle(){
-            $query = 'SELECT * FROM '.$this->table.' WHERE idZaposlenika = :idZaposlenika LIMIT 1;';
+            $query = '
+                SELECT z.idZaposlenika, z.ime, z.prezime, o.odjel, u.uloga FROM zaposlenici z
+                JOIN odjeli o 
+                ON z.odjel = o.id
+                JOIN uloge u
+                ON z.uloga = u.id
+                WHERE idZaposlenika = :idZaposlenika 
+                LIMIT 1;
+            ';
             $statment = $this->connection->prepare($query);
             $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
             if(!$statment->execute()){

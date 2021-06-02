@@ -19,11 +19,15 @@
 
         public function read(){
             $query = '
-                SELECT p.*, z.* FROM putninalozi p 
-                JOIN zaposlenikputninalog zp
-                ON p.idPutnogNaloga = zp.idPutnogNaloga
-                JOIN zaposlenici z
-                ON z.idZaposlenika = zp.idZaposlenika;
+                SELECT p.*,z.idZaposlenika, z.ime, z.prezime, o.odjel, u.uloga FROM putninalozi p 
+                JOIN zaposlenikputninalog zp 
+                ON p.idPutnogNaloga = zp.idPutnogNaloga 
+                JOIN zaposlenici z 
+                ON z.idZaposlenika = zp.idZaposlenika 
+                JOIN odjeli o 
+                ON z.odjel = o.id
+                JOIN uloge u
+                ON z.uloga = u.id;
             ';
             $statment = $this->connection->prepare($query);
             if($statment->execute()){
@@ -35,11 +39,15 @@
 
         public function readSingle(){
             $query = '
-                SELECT p.*, z.* FROM putninalozi p 
+                SELECT p.*,z.idZaposlenika, z.ime, z.prezime, o.odjel, u.uloga FROM putninalozi p 
                 JOIN zaposlenikputninalog zp 
                 ON p.idPutnogNaloga = zp.idPutnogNaloga 
                 JOIN zaposlenici z 
                 ON z.idZaposlenika = zp.idZaposlenika 
+                JOIN odjeli o 
+                ON z.odjel = o.id
+                JOIN uloge u
+                ON z.uloga = u.id
                 WHERE zp.idPutnogNaloga = :idPutnogNaloga
             ';
             $statment = $this->connection->prepare($query);
