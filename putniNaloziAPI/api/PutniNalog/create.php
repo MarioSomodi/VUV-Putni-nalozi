@@ -24,17 +24,28 @@
     $putniNalog->odobreno = $data->odobreno;
 
     $allExist = true;
+    $allFree = true;
+    $noDuplicates = true;
     include_once('../helpers\getIdsZaposlenici.php');
     foreach($putniNalog->zaposlenici as $zaposlenikId){
-        $zaposlenik->idZaposlenika = $zaposlenikId;
-        $zaposlenik->readSingle();
-        if($zaposlenik->slobodan == 0){
-            $allExist = false;
-            break;
-        }
         if(!in_array($zaposlenikId, $zaposleniciIds_arr)){
             $allExist = false;
             break;
+        }
+    }
+    if($allExist == true){
+        if(count($putniNalog->zaposlenici) != count(array_unique($putniNalog->zaposlenici))){$noDuplicates = false;}
+        if($noDuplicates == false){$allExist = false;}
+        if($noDuplicates == true){
+            foreach($putniNalog->zaposlenici as $zaposlenikId){
+                $zaposlenik->idZaposlenika = $zaposlenikId;
+                $zaposlenik->readSingle();
+                if($zaposlenik->slobodan == 0){
+                    $allExist = false;
+                    $allFree = false;
+                    break;
+                }
+            }
         }
     }
     try{
@@ -54,7 +65,13 @@
             }
             echo json_encode(array("message" => "Putni nalog je uspijesno kreiran."));
         }else{
-            echo json_encode(array("message" => "Jedan od zaposlenika kojeg zelite dodati ne postoji ili nije slobodan, putni nalog nije kreiran."));
+            if($noDuplicates == false){
+                echo json_encode(array("message" => "Putni nalog ne smije imati dva ili vise istih zaposlenika."));
+            }else if($allFree == false){
+                echo json_encode(array("message" => "Jedan od zaposlenika kojeg zelite dodati nije slobodan, putni nalog nije kreiran."));
+            }else{
+                echo json_encode(array("message" => "Jedan od zaposlenika kojeg zelite dodati ne postoji, putni nalog nije kreiran."));
+            }
         }
     }catch(Exception $e)
     {

@@ -28,17 +28,33 @@
     $putniNalog->zaposlenici = $data->zaposlenici;
     $putniNalog->odobreno = $data->odobreno;
 
-    $check = true;
+    $allExist = true;
+    $allFree = true;
+    $noDuplicates = true;
     include_once('../helpers\getIdsZaposlenici.php');
     foreach($putniNalog->zaposlenici as $zaposlenikId){
         if(!in_array($zaposlenikId, $zaposleniciIds_arr)){
-            $check = false;
+            $allExist = false;
             break;
         }
     }
-    
+    if($allExist == true){
+        if(count($putniNalog->zaposlenici) != count(array_unique($putniNalog->zaposlenici))){$noDuplicates = false;}
+        if($noDuplicates == false){$allExist = false;}
+        if($noDuplicates == true){
+            foreach($putniNalog->zaposlenici as $zaposlenikId){
+                $zaposlenik->idZaposlenika = $zaposlenikId;
+                $zaposlenik->readSingle();
+                if($zaposlenik->slobodan == 0){
+                    $allExist = false;
+                    $allFree = false;
+                    break;
+                }
+            }
+        }
+    }
     if(in_array($putniNalog->idPutnogNaloga, $putniNaloziIds_arr)){
-        if($check){
+        if($allExist){
             try{
                 $putniNalog->update();
                 $zaposlenik->removeFromPutniNalog($putniNalog->idPutnogNaloga);
@@ -62,7 +78,13 @@
                 ));
             }
         }else{
-            echo json_encode(array("message" => "Jedan od zaposlenika kojeg zelite dodati ne postoji, putni nalog nije azuriran."));
+            if($noDuplicates == false){
+                echo json_encode(array("message" => "Putni nalog ne smije imati dva ili vise istih zaposlenika."));
+            }else if($allFree == false){
+                echo json_encode(array("message" => "Jedan od zaposlenika kojeg zelite dodati nije slobodan, putni nalog nije azuriran."));
+            }else{
+                echo json_encode(array("message" => "Jedan od zaposlenika kojeg zelite dodati ne postoji, putni nalog nije azuriran."));
+            }
         }
     }else{
         echo json_encode(array("message" => "Putni nalog sa odabranim identifikatorom ne postoji."));
