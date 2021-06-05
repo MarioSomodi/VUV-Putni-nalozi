@@ -26,12 +26,17 @@
     $allExist = true;
     include_once('../helpers\getIdsZaposlenici.php');
     foreach($putniNalog->zaposlenici as $zaposlenikId){
+        $zaposlenik->idZaposlenika = $zaposlenikId;
+        $zaposlenik->readSingle();
+        if($zaposlenik->slobodan == 0){
+            $allExist = false;
+            break;
+        }
         if(!in_array($zaposlenikId, $zaposleniciIds_arr)){
             $allExist = false;
             break;
         }
     }
-
     try{
         if($allExist){
             $putniNalog->create();
@@ -49,7 +54,7 @@
             }
             echo json_encode(array("message" => "Putni nalog je uspijesno kreiran."));
         }else{
-            echo json_encode(array("message" => "Jedan od zaposlenika kojeg zelite dodati ne postoji, putni nalog nije kreiran."));
+            echo json_encode(array("message" => "Jedan od zaposlenika kojeg zelite dodati ne postoji ili nije slobodan, putni nalog nije kreiran."));
         }
     }catch(Exception $e)
     {

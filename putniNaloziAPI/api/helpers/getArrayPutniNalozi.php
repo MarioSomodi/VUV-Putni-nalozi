@@ -15,7 +15,7 @@
             while($row = $resultPutniNalozi->fetch(PDO::FETCH_ASSOC)){
                 extract($row);
                 if(!in_array($idPutnogNaloga, array_column($putniNalozi, 'idPutnogNaloga'))){
-                    $putniNalog = array(
+                    $putniNalog_item = array(
                         'idPutnogNaloga' => $idPutnogNaloga,
                         'polaziste' => $polaziste,
                         'odrediste' => $odrediste,
@@ -25,17 +25,17 @@
                         'zaposlenici' => array(),
                         'odobreno' => $odobreno
                     );
-                    array_push($putniNalozi, $putniNalog);
+                    array_push($putniNalozi, $putniNalog_item);
                     $index++;
                 }
-                $zaposlenik = array(
+                $zaposlenik_item = array(
                     'idZaposlenika' => $idZaposlenika,
                     'ime' => $ime,
                     'prezime' => $prezime,
                     'odjel' => $odjel,
                     'uloga' => $uloga,
                 );
-                array_push($putniNalozi[$index]['zaposlenici'], $zaposlenik);
+                array_push($putniNalozi[$index]['zaposlenici'], $zaposlenik_item);
             }
         }else{
             echo json_encode(array('message' => 'Nema putnih naloga.'));

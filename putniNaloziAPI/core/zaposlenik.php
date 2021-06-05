@@ -16,7 +16,7 @@
 
         public function read(){
             $query = '
-                SELECT z.idZaposlenika, z.ime, z.prezime, o.odjel, u.uloga FROM zaposlenici z
+                SELECT z.idZaposlenika, z.ime, z.prezime, z.slobodan, o.odjel, u.uloga FROM zaposlenici z
                 JOIN odjeli o 
                 ON z.odjel = o.id
                 JOIN uloge u
@@ -33,7 +33,7 @@
 
         public function readSingle(){
             $query = '
-                SELECT z.idZaposlenika, z.ime, z.prezime, o.odjel, u.uloga FROM zaposlenici z
+                SELECT z.idZaposlenika, z.ime, z.prezime, z.slobodan, o.odjel, u.uloga FROM zaposlenici z
                 JOIN odjeli o 
                 ON z.odjel = o.id
                 JOIN uloge u
@@ -51,10 +51,11 @@
             $this->prezime = $row['prezime'];
             $this->odjel = $row['odjel'];
             $this->uloga = $row['uloga'];
+            $this->slobodan = $row['slobodan'];
         }
 
         public function create(){
-            $query = 'INSERT INTO '.$this->table.' SET ime = :ime, prezime = :prezime, odjel = :odjel, uloga = :uloga;';
+            $query = 'INSERT INTO '.$this->table.' SET ime = :ime, prezime = :prezime, odjel = :odjel, uloga = :uloga, slobodan = 1;';
             $statment = $this->connection->prepare($query);
             
             //Sets all properties.

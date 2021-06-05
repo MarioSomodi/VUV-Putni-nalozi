@@ -9,21 +9,25 @@
     include_once('../helpers/getArrayPutniNalozi.php');
 
     //Instantiate.
-    $zaposlenik = new Zaposlenik($database);
+    $zaposlenikObj = new Zaposlenik($database);
     foreach($zaposleniciIds_arr as $zaposlenikId){
-        $zaposlenik->idZaposlenika = $zaposlenikId;
-        $zaposlenik->readSingle();
+        $zaposlenikObj->idzaposlenika = $zaposlenikId;
+        $zaposlenikObj->readSingle();
         foreach($putniNalozi as $putniNalog){
-            if(in_array($zaposlenik->idZaposlenika, array_column($putniNalog['zaposlenici'], 'idZaposlenika'))){
+            if(in_array($zaposlenikObj->idzaposlenika, array_column($putniNalog['zaposlenici'], 'idzaposlenika'))){
                 $endDate = new DateTime($putniNalog['datumOdlaska']);
                 $endDate->add(new DateInterval('P'.$putniNalog['brojDana'].'D'));
-                if($endDate > new DateTime('NOW')){
-                    $zaposlenik->slobodan = 0;
+                if($putniNalog['odobreno'] == 0){
+                    $zaposlenikObj->slobodan = 1;
                 }else{
-                    $zaposlenik->slobodan = 1;
+                    if($endDate > new DateTime('NOW')){
+                        $zaposlenikObj->slobodan = 0;
+                    }else{
+                        $zaposlenikObj->slobodan = 1;
+                    }
                 }
             }
         }
-        $zaposlenik->updateAvailable();
+        $zaposlenikObj->updateAvailable();
     }
 ?>

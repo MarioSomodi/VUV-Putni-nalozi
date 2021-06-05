@@ -20,6 +20,7 @@
                 'prezime' => $zaposlenikObj->prezime,
                 'odjel' => $zaposlenikObj->odjel,
                 'uloga' => $zaposlenikObj->uloga,
+                'slobodan' => $zaposlenikObj->slobodan
             );
             echo json_encode($zaposlenik);
         }else{

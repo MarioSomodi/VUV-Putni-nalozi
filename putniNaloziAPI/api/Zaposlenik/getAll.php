@@ -27,6 +27,7 @@
                     'prezime' => $prezime,
                     'odjel' => $odjel,
                     'uloga' => $uloga,
+                    'slobodan' => $slobodan
                 );
                 array_push($zaposlenici, $zaposlenik);
             }
