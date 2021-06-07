@@ -1,18 +1,47 @@
-import React from 'react'
-import { Nav, NavBarContainer, NavLogo } from './NavbarElements'
+import React from 'react';
+import { FaBars } from 'react-icons/fa';
+import {
+  Nav,
+  NavBarContainer,
+  NavLogo,
+  MobileIcon,
+  NavMenu,
+  NavItem,
+  NavLink,
+  AdminButton,
+  ButtonLink,
+} from './NavbarElements';
 
-const Navbar = () => {
-    return (
-        <>
-            <Nav>
-                <NavBarContainer>
-                    <NavLogo to="/">
-                        VUVPutniNalozi
-                    </NavLogo>
-                </NavBarContainer>
-            </Nav>
-        </>
-    )
-}
+const Navbar = ({ toggle }) => {
+  return (
+    <>
+      <Nav>
+        <NavBarContainer>
+          <NavLogo to='/'>VUVPutniNalozi</NavLogo>
+          <MobileIcon onClick={toggle}>
+            <FaBars />
+          </MobileIcon>
+          <NavMenu>
+            <NavItem>
+              <NavLink to='putniNalozi'>Putni nalozi</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink to='createPutniNalog'>Novi putni nalog</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink to='zaposlenici'>Zaposlenici</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink to='newZaposlenik'>Novi zaposlenik</NavLink>
+            </NavItem>
+          </NavMenu>
+          <AdminButton>
+            <ButtonLink to='/signin'>Administracija</ButtonLink>
+          </AdminButton>
+        </NavBarContainer>
+      </Nav>
+    </>
+  );
+};
 
-export default Navbar
+export default Navbar;
