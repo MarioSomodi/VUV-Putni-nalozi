@@ -19,16 +19,16 @@ const Topbar = ({ isOpen, toggle }) => {
         </Icon>
         <TopbarWrapper>
           <TopbarMenu>
-            <TopbarLink onClick={toggle} to='putniNalozi'>
+            <TopbarLink onClick={toggle} to='/putniNalozi'>
               Putni nalozi
             </TopbarLink>
-            <TopbarLink onClick={toggle} to='createPutniNalog'>
+            <TopbarLink onClick={toggle} to='/putniNalog/novi'>
               Novi putni nalog
             </TopbarLink>
-            <TopbarLink onClick={toggle} to='zaposlenici'>
+            <TopbarLink onClick={toggle} to='/zaposlenici'>
               Zaposlenici
             </TopbarLink>
-            <TopbarLink onClick={toggle} to='newZaposlenik'>
+            <TopbarLink onClick={toggle} to='/zaposlenik/novi'>
               Novi zaposlenik
             </TopbarLink>
           </TopbarMenu>

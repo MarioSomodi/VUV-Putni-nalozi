@@ -29,8 +29,8 @@ const HomeSection = () => {
         <HomeContent>
           <HomeH1>Putni nalozi pojednostavljeni</HomeH1>
           <HomeP>
-            Samo u par klikova do podnesenog zahtjeva za vasim putnim nalogom,
-            odgovor o odobrenju dobivate u roku 24h osim neradim danima.
+            Samo u par klikova do podnesenog zahtjeva za vašim putnim nalogom,
+            odgovor o odobrenju dobivate u roku 24h osim neradnim danima.
           </HomeP>
           <HomeBtnWrapper>
             <Button

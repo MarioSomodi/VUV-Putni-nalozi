@@ -23,16 +23,16 @@ const Navbar = ({ toggle }) => {
           </MobileIcon>
           <NavMenu>
             <NavItem>
-              <NavLink to='putniNalozi'>Putni nalozi</NavLink>
+              <NavLink to='/putniNalozi'>Putni nalozi</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to='createPutniNalog'>Novi putni nalog</NavLink>
+              <NavLink to='/putniNalog/novi'>Novi putni nalog</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to='zaposlenici'>Zaposlenici</NavLink>
+              <NavLink to='/zaposlenici'>Zaposlenici</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to='newZaposlenik'>Novi zaposlenik</NavLink>
+              <NavLink to='/zaposlenik/novi'>Novi zaposlenik</NavLink>
             </NavItem>
           </NavMenu>
           <AdminButton>

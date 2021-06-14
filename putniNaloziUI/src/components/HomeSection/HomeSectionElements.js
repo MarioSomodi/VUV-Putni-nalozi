@@ -2,14 +2,14 @@ import styled from 'styled-components';
 import { MdKeyboardArrowRight, MdArrowForward } from 'react-icons/md';
 
 export const HomeContainer = styled.div`
-  background: #0c0c0c;
+  background: #151515;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0 30px;
   height: 906px;
   position: relative;
-  z-index: 1;
+  z-index: -1;
 
   :before {
     content: '';

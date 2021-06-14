@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { Link as LinkR } from 'react-router-dom';
-import { Link as LinkS } from 'react-scroll';
 import { FaTimes } from 'react-icons/fa';
 
 export const TopbarContainer = styled.aside`
@@ -50,7 +49,7 @@ export const TopbarMenu = styled.ul`
   }
 `;
 
-export const TopbarLink = styled(LinkS)`
+export const TopbarLink = styled(LinkR)`
   display: flex;
   align-items: center;
   justify-content: center;

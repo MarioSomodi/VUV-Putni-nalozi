@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 import { Link as LinkR } from 'react-router-dom';
-import { Link as LinkS } from 'react-scroll';
 
 export const Nav = styled.nav`
-  background: #0d0d0d;
+  background: #151515;
   height: 80px;
   display: flex;
   justify-content: center;
@@ -89,7 +88,7 @@ export const NavItem = styled.li`
   }
 `;
 
-export const NavLink = styled(LinkS)`
+export const NavLink = styled(LinkR)`
   color: #fff;
   display: flex;
   align-items: center;
