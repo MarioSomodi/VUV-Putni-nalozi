@@ -1,16 +1,16 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.container {
+  display: flex;
 }
 
-*::-webkit-scrollbar {
-  display: none;
-}
-
-body {
+.authContainer {
   width: 100%;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.others {
+  flex: 4;
 }
