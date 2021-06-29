@@ -17,11 +17,12 @@
 
     try{
         $register->register();
-        echo json_encode("RegisterSuccess");
+        echo json_encode(array("message" => "Registracija uspijesna, biti ce te prebaceni na prijavu."));
     }catch(Exception $e){
         echo json_encode(array(
             "message" => "Doslo je do pogreske kod registracije.",
-            "error" => $e->getMessage()
+            "error" => $e->getMessage(),
+            "status" => "false"
         ));
     }
 ?>

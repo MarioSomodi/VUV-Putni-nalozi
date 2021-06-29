@@ -1,8 +1,8 @@
 import { React, useState } from 'react';
 import './authentication.css';
-import LoginForm from './loginForm';
+import LoginForm from './Login/loginForm';
 import { motion } from 'framer-motion';
-import SignUpForm from './signupForm';
+import SignUpForm from './SignUp/signupForm';
 
 const backdropVariants = {
   expanded: {
@@ -27,7 +27,7 @@ const expandingTransition = {
   stiffness: 30,
 };
 
-export default function Authentication() {
+export default function Authentication(props) {
   const [isExpanded, setExpanded] = useState(false);
   const [active, setActive] = useState('signin');
 
@@ -78,7 +78,10 @@ export default function Authentication() {
         </div>
         <div className='innerContainer'>
           {active === 'signin' ? (
-            <LoginForm switchToSignUp={switchToSignUp} />
+            <LoginForm
+              switchToSignUp={switchToSignUp}
+              Success={props.Success}
+            />
           ) : (
             <SignUpForm switchToSignIn={switchToSignIn} />
           )}

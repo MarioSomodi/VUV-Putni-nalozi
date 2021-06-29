@@ -2,6 +2,8 @@
     //Headers.
     header('Access-Control-Allow-Origin: *');
     header('Content-Type: application/JSON');
+    header('Access-Control-Allow-Methods: POST');
+    header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
 
     //Include init file.
     include_once('../../core/initialize.php');
@@ -19,7 +21,8 @@
     }catch(Exception $e){
         echo json_encode(array(
             "message" => "Doslo je do pogreske kod prijave.",
-            "error" => $e->getMessage()
+            "error" => $e->getMessage(),
+            "status" => "false"
         ));
     }
 ?>

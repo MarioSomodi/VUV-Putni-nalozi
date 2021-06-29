@@ -85,6 +85,10 @@
   text-decoration: none;
 }
 
+.mutedLink.register {
+  margin-bottom: 60px !important;
+}
+
 .boldLink {
   font-size: 12px;
   color: rgba(87, 36, 199, 1);
@@ -93,7 +97,7 @@
 }
 
 .input {
-  margin: 15px 15px !important;
+  margin: 15px 15px 0px !important;
 }
 
 .input:last-of-type {
@@ -109,4 +113,14 @@
 form {
   display: flex;
   flex-direction: column;
+}
+
+.helperText {
+  margin-left: 17px !important;
+  color: red !important;
+}
+
+.successText {
+  margin-left: 17px !important;
+  color: green !important;
 }
