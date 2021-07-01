@@ -42,7 +42,7 @@ export default function SignUpForm(props) {
               type='text'
               name='korisnickoIme'
               variant='outlined'
-              label='Korisničko ime'
+              label='Korisnicko ime'
               className='input'
               value={values.korisnickoIme}
               onChange={handleChange}
@@ -54,6 +54,34 @@ export default function SignUpForm(props) {
             )}
             {error && (
               <FormHelperText className='helperText'>{error}</FormHelperText>
+            )}
+            <TextField
+              type='text'
+              name='ime'
+              variant='outlined'
+              label='Ime'
+              className='input'
+              value={values.ime}
+              onChange={handleChange}
+            />
+            {errors.ime && (
+              <FormHelperText className='helperText'>
+                {errors.ime}
+              </FormHelperText>
+            )}
+            <TextField
+              type='text'
+              name='prezime'
+              variant='outlined'
+              label='Prezime'
+              className='input'
+              value={values.prezime}
+              onChange={handleChange}
+            />
+            {errors.prezime && (
+              <FormHelperText className='helperText'>
+                {errors.prezime}
+              </FormHelperText>
             )}
             <TextField
               type='password'

@@ -15,9 +15,10 @@
 
         public function read(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = 'SELECT * FROM '.$this->table.';';
                     $statment = $this->connection->prepare($query);
                     $statment->execute();
@@ -36,9 +37,10 @@
 
         public function readSingle(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = '
                         SELECT * FROM '.$this->table.'
                         WHERE id = :id 
@@ -61,9 +63,10 @@
 
         public function create(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = 'INSERT INTO '.$this->table.' SET uloga = :uloga;';
                     $statment = $this->connection->prepare($query);
                     
@@ -88,9 +91,10 @@
         }
         public function update(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = 'UPDATE '.$this->table.' SET uloga = :uloga WHERE id = :id;';
                     $statment = $this->connection->prepare($query);
                     
@@ -117,9 +121,10 @@
 
         public function delete(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = '
                         DELETE FROM '.$this->table.' WHERE id = :id;
                         UPDATE zaposlenici SET uloga = 1 WHERE uloga = :id;

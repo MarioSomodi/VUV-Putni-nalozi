@@ -2,6 +2,7 @@
     //Headers.
     header('Access-Control-Allow-Origin: *');
     header('Content-Type: application/JSON');
+    header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
 
     //Include init file.
     include_once('../../core/initialize.php');

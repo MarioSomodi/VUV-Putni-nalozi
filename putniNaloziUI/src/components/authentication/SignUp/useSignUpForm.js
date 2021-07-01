@@ -3,6 +3,8 @@ import { useState } from 'react';
 const useForm = (validate, Success, Failed) => {
   const [values, setValues] = useState({
     korisnickoIme: '',
+    ime: '',
+    prezime: '',
     lozinka: '',
     lozinka2: '',
   });
@@ -25,6 +27,8 @@ const useForm = (validate, Success, Failed) => {
         body: JSON.stringify({
           korisnickoIme: values.korisnickoIme,
           lozinka: values.lozinka,
+          ime: values.ime,
+          prezime: values.prezime,
         }),
       };
       fetch(

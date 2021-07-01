@@ -2,6 +2,7 @@
     //Headers.
     header('Access-Control-Allow-Origin: *');
     header('Content-Type: application/JSON');
+    header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
 
     //Include init file.
     include_once('../../core/initialize.php');
@@ -20,7 +21,8 @@
                 'prezime' => $zaposlenikObj->prezime,
                 'odjel' => $zaposlenikObj->odjel,
                 'uloga' => $zaposlenikObj->uloga,
-                'slobodan' => $zaposlenikObj->slobodan
+                'slobodan' => $zaposlenikObj->slobodan,
+                'role' => $zaposlenikObj->$role
             );
             echo json_encode($zaposlenik);
         }else{

@@ -3,6 +3,12 @@ export default function validateInfo(values) {
   if (!values.korisnickoIme.trim()) {
     errors.korisnickoIme = 'Korisnicko ime je obavezno.';
   }
+  if (!values.ime.trim()) {
+    errors.ime = 'Ime je obavezno.';
+  }
+  if (!values.prezime.trim()) {
+    errors.prezime = 'Prezime je obavezno.';
+  }
   if (!values.lozinka.trim()) {
     errors.lozinka = 'Lozinka je obavezna.';
   } else if (!values.lozinka.length > 6) {

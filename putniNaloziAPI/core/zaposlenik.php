@@ -12,6 +12,7 @@
         public $odjel;
         public $uloga;
         public $slobodan;
+        public $role;
 
         public function __construct($db){
             $this->connection = $db;
@@ -19,11 +20,12 @@
 
         public function read(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = '
-                        SELECT z.idZaposlenika, z.ime, z.prezime, z.slobodan, o.odjel, u.uloga FROM zaposlenici z
+                        SELECT z.idZaposlenika, z.ime, z.prezime, z.slobodan, z.rola, o.odjel, u.uloga FROM zaposlenici z
                         JOIN odjeli o 
                         ON z.odjel = o.id
                         JOIN uloge u
@@ -46,11 +48,12 @@
 
         public function readSingle(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = '
-                        SELECT z.idZaposlenika, z.ime, z.prezime, z.slobodan, o.odjel, u.uloga FROM zaposlenici z
+                        SELECT z.idZaposlenika, z.ime, z.prezime, z.slobodan, z.rola, o.odjel, u.uloga FROM zaposlenici z
                         JOIN odjeli o 
                         ON z.odjel = o.id
                         JOIN uloge u
@@ -73,15 +76,16 @@
                     throw new Exception("Autorizacijski token je neispravan ili niste autorizirani. Kontaktirajte administratora.");
                 }
             }else{
-                throw new Exception("Autorizacijski token je neispravan ili niste autorizirani. Kontaktirajte administratora.");
+                throw new Exception("Autorizacijski token je neispravan ili niste autorizirani. Kontaktirajte administratora. : Header");
             }
         }
 
         public function create(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = 'INSERT INTO '.$this->table.' SET ime = :ime, prezime = :prezime, odjel = :odjel, uloga = :uloga, slobodan = 1;';
                     $statment = $this->connection->prepare($query);
                     
@@ -112,9 +116,10 @@
         }
         public function update(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = 'UPDATE '.$this->table.' SET ime = :ime, prezime = :prezime, odjel = :odjel, uloga = :uloga WHERE idZaposlenika = :idZaposlenika;';
                     $statment = $this->connection->prepare($query);
                     
@@ -148,9 +153,10 @@
 
         public function delete(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = '
                         DELETE FROM '.$this->table.' WHERE idZaposlenika = :idZaposlenika;
                         DELETE FROM '.$this->relationTable.' WHERE idZaposlenika = :idZaposlenika;
@@ -178,9 +184,10 @@
 
         public function addToPutniNalog($idPutnogNaloga){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = 'INSERT INTO '.$this->relationTable.' SET idPutnogNaloga = :idPutnogNaloga, idZaposlenika = :idZaposlenika;';
                     $statment = $this->connection->prepare($query);
                     
@@ -206,9 +213,10 @@
         }
         public function removeFromPutniNalog($idPutnogNaloga){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = 'DELETE FROM '.$this->relationTable.' WHERE idPutnogNaloga = :idPutnogNaloga';
                     $statment = $this->connection->prepare($query);
                     
@@ -230,9 +238,10 @@
         }
         public function updateAvailable(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = 'UPDATE '.$this->table.' SET slobodan = :slobodan WHERE idZaposlenika = :idZaposlenika;';
                     $statment = $this->connection->prepare($query);
                     
@@ -255,6 +264,15 @@
                 }
             }else{
                 throw new Exception("Autorizacijski token je neispravan ili niste autorizirani. Kontaktirajte administratora.");
+            }
+        }
+        public function getIds(){
+            $query = 'SELECT idZaposlenika FROM '.$this->table.';';
+            $statment = $this->connection->prepare($query);
+            if($statment->execute()){
+                return $statment;
+            }else{
+                throw new Exception("Error \n".$statment->error);
             }
         }
     }

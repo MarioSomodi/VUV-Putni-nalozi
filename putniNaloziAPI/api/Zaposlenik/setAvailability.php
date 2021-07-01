@@ -2,6 +2,7 @@
     //Headers.
     header('Access-Control-Allow-Origin: *');
     header('Content-Type: application/JSON');
+    header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
 
     //Include init file.
     include_once('../../core/initialize.php');
@@ -11,19 +12,26 @@
     //Instantiate.
     $zaposlenikObj = new Zaposlenik($database);
     foreach($zaposleniciIds_arr as $zaposlenikId){
-        $zaposlenikObj->idzaposlenika = $zaposlenikId;
+        $zaposlenikObj->idZaposlenika = $zaposlenikId;
         $zaposlenikObj->readSingle();
         foreach($putniNalozi as $putniNalog){
-            if(in_array($zaposlenikObj->idzaposlenika, array_column($putniNalog['zaposlenici'], 'idzaposlenika'))){
+            $zaposlenikExist = false;
+            foreach($putniNalog['zaposlenici'] as $zaposlenik){
+                if($zaposlenik['idZaposlenika'] == $zaposlenikObj->idZaposlenika){
+                    $zaposlenikExist = true;
+                }
+            }
+            if($zaposlenikExist)
+            {
                 $endDate = new DateTime($putniNalog['datumOdlaska']);
                 $endDate->add(new DateInterval('P'.$putniNalog['brojDana'].'D'));
                 if($putniNalog['odobreno'] == 0){
                     $zaposlenikObj->slobodan = 1;
                 }else{
-                    if($endDate > new DateTime('NOW')){
-                        $zaposlenikObj->slobodan = 0;
-                    }else{
+                    if($endDate < new DateTime('NOW')){
                         $zaposlenikObj->slobodan = 1;
+                    }else{
+                        $zaposlenikObj->slobodan = 0;
                     }
                 }
             }

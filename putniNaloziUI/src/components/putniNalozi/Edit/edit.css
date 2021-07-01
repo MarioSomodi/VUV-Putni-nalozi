@@ -1,0 +1,13 @@
+.edit {
+  flex: 4;
+  margin: 25px;
+}
+
+.editContainer {
+  padding-right: 35px;
+  padding-bottom: 20px;
+}
+
+.helperTextSpacing {
+  margin-left: 17px !important;
+}

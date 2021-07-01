@@ -22,18 +22,19 @@
 
         public function read(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = '
                         SELECT p.*,z.idZaposlenika, z.ime, z.prezime, o.odjel, u.uloga FROM putninalozi p 
-                        JOIN zaposlenikputninalog zp 
+                        LEFT JOIN zaposlenikputninalog zp 
                         ON p.idPutnogNaloga = zp.idPutnogNaloga 
-                        JOIN zaposlenici z 
+                        LEFT JOIN zaposlenici z 
                         ON z.idZaposlenika = zp.idZaposlenika 
-                        JOIN odjeli o 
+                        LEFT JOIN odjeli o 
                         ON z.odjel = o.id
-                        JOIN uloge u
+                        LEFT JOIN uloge u
                         ON z.uloga = u.id;
                     ';
                     $statment = $this->connection->prepare($query);
@@ -52,9 +53,10 @@
 
         public function readSingle(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = '
                         SELECT p.*,z.idZaposlenika, z.ime, z.prezime, o.odjel, u.uloga FROM putninalozi p 
                         JOIN zaposlenikputninalog zp 
@@ -84,9 +86,10 @@
 
         public function create(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = 'INSERT INTO '.$this->table.' SET polaziste = :polaziste, odrediste = :odrediste, svrha = :svrha, datumOdlaska = :datumOdlaska, brojDana = :brojDana, odobreno = :odobreno;';
                     $statment = $this->connection->prepare($query);
                     
@@ -126,9 +129,10 @@
 
         public function update(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = 'UPDATE '.$this->table.' SET polaziste = :polaziste, odrediste = :odrediste, svrha = :svrha, datumOdlaska = :datumOdlaska, brojDana = :brojDana, odobreno = :odobreno WHERE idPutnogNaloga = :idPutnogNaloga;';
                     $statment = $this->connection->prepare($query);
                     
@@ -170,9 +174,10 @@
 
         public function delete(){
             $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
                 try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = '
                         DELETE FROM '.$this->table.' WHERE idPutnogNaloga = :idPutnogNaloga1;
                         DELETE FROM '.$this->relationTable.' WHERE idPutnogNaloga = :idPutnogNaloga2;
@@ -195,22 +200,12 @@
         }
 
         public function getIds(){
-            $headers = apache_request_headers();
-            if(isset($headers['Authorization'])){
-                $token = str_replace('Bearer ', '', $headers['Authorization']);
-                try{
-                    $query = 'SELECT idPutnogNaloga FROM '.$this->table.';';
-                    $statment = $this->connection->prepare($query);
-                    if($statment->execute()){
-                        return $statment;
-                    }else{
-                        throw new Exception("Error \n".$statment->error);
-                    }
-                }catch(Exception $e){
-                    throw new Exception("Autorizacijski token je neispravan ili niste autorizirani. Kontaktirajte administratora.");
-                }
+            $query = 'SELECT idPutnogNaloga FROM '.$this->table.';';
+            $statment = $this->connection->prepare($query);
+            if($statment->execute()){
+                return $statment;
             }else{
-                throw new Exception("Autorizacijski token je neispravan ili niste autorizirani. Kontaktirajte administratora.");
+                throw new Exception("Error \n".$statment->error);
             }
         }
     }

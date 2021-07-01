@@ -12,5 +12,4 @@
     require_once(CORE_PATH.DS.'odjel.php');
     require_once(CORE_PATH.DS.'uloga.php');
     require_once(CORE_PATH.DS.'authorization.php');
-    require_once(CORE_PATH.DS.'korisnik.php');
 ?>

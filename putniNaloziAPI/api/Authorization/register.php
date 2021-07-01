@@ -14,6 +14,8 @@
 
     $register->korisnickoIme = $data->korisnickoIme;
     $register->lozinka = $data->lozinka;
+    $register->ime = $data->ime;
+    $register->prezime = $data->prezime;
 
     try{
         $register->register();
