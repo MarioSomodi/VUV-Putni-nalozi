@@ -16,7 +16,7 @@
         }
 
         public function auth(){
-            $query = 'SELECT korisnickoIme, rola, ime, prezime FROM '.$this->table.' WHERE korisnickoIme = :korisnickoIme AND lozinka = :lozinka';
+            $query = 'SELECT korisnickoIme, rola, ime, prezime, idZaposlenika FROM '.$this->table.' WHERE korisnickoIme = :korisnickoIme AND lozinka = :lozinka';
             $this->korisnickoIme = htmlspecialchars(strip_tags($this->korisnickoIme));
             $statment = $this->connection->prepare($query);
             $statment->bindParam(':korisnickoIme', $this->korisnickoIme);
@@ -35,6 +35,7 @@
                 $row = $statment->fetch(PDO::FETCH_ASSOC);
                 return array(
                     'username' => $this->korisnickoIme,
+                    'id' => $row['idZaposlenika'],
                     'ime' => $row['ime'],
                     'prezime' => $row['prezime'],
                     'role' => $row['rola'],

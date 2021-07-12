@@ -1,10 +1,11 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState, useEffect, useRef } from 'react';
 import './single.css';
 import { useParams } from 'react-router-dom';
 import { Paper, Grid } from '@material-ui/core';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { ArrowRightAlt, Check, Close, Visibility } from '@material-ui/icons';
-import { IconButton, Avatar } from '@material-ui/core';
+import { IconButton, Avatar, Button } from '@material-ui/core';
+import ReactToPrint from 'react-to-print';
 
 const theme = createMuiTheme({
   palette: {
@@ -16,6 +17,7 @@ const theme = createMuiTheme({
 
 export default function PNSingle(props) {
   const [putniNalog, setPutniNalog] = useState(null);
+  const componentRef = useRef();
   let { idPutnogNaloga } = useParams();
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
@@ -36,7 +38,7 @@ export default function PNSingle(props) {
   return (
     <div className='single'>
       <MuiThemeProvider theme={theme}>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} ref={componentRef}>
           <Grid item xs={12}>
             <Paper className='infoContainer' elevation={6}>
               {putniNalog && (
@@ -79,39 +81,53 @@ export default function PNSingle(props) {
               <div className='info'>
                 <div className='title'>Zaposlenici putnog naloga</div>
                 <hr />
-                {putniNalog &&
-                  putniNalog.zaposlenici.map((zaposlenik) => (
-                    <div className='zaposlenik'>
-                      <div className='avatar'>
-                        <Avatar
-                          alt='Avatar'
-                          src={
-                            'https://eu.ui-avatars.com/api/?background=5724c7&color=fff&rounded=true&bold=true&name=' +
-                            zaposlenik.ime +
-                            '+' +
-                            zaposlenik.prezime
-                          }
-                        />
+                {putniNalog && putniNalog.zaposlenici[0].ime !== null
+                  ? putniNalog.zaposlenici.map((zaposlenik) => (
+                      <div className='zaposlenik'>
+                        <div className='avatar'>
+                          <Avatar
+                            alt='Avatar'
+                            src={
+                              'https://eu.ui-avatars.com/api/?background=5724c7&color=fff&rounded=true&bold=true&name=' +
+                              zaposlenik.ime +
+                              '+' +
+                              zaposlenik.prezime
+                            }
+                          />
+                        </div>
+                        <div className='userInfo'>
+                          <span className='userName'>
+                            {zaposlenik.ime + ' ' + zaposlenik.prezime}
+                          </span>
+                          <span className='role'>
+                            {zaposlenik.odjel + ' | ' + zaposlenik.uloga}
+                          </span>
+                        </div>
+                        <IconButton>
+                          <Visibility color='primary' />
+                        </IconButton>
                       </div>
-                      <div className='userInfo'>
-                        <span className='userName'>
-                          {zaposlenik.ime + ' ' + zaposlenik.prezime}
-                        </span>
-                        <span className='role'>
-                          {zaposlenik.odjel + ' | ' + zaposlenik.uloga}
-                        </span>
-                      </div>
-                      <IconButton>
-                        <Visibility color='primary' />
-                      </IconButton>
-                      {console.log(zaposlenik)}
-                    </div>
-                  ))}
+                    ))
+                  : 'Ovaj putni nalog trenutno nema niti jednoga zaposlenika.'}
                 <hr />
               </div>
             </Paper>
           </Grid>
         </Grid>
+        <ReactToPrint
+          trigger={() => (
+            <Button
+              type='button'
+              variant='contained'
+              color='primary'
+              fullWidth='true'
+              className='printButton'
+            >
+              Isprintaj podatke o putnom nalogu
+            </Button>
+          )}
+          content={() => componentRef.current}
+        />
       </MuiThemeProvider>
     </div>
   );

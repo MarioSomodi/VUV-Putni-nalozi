@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import useForm from './useEditForm';
 import validate from './validateEditData';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import MultiSelect from 'react-multi-select-component';
 import {
   Paper,
   Grid,
@@ -13,6 +14,7 @@ import {
   FormControlLabel,
   Switch,
 } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 const theme = createMuiTheme({
   palette: {
@@ -25,9 +27,16 @@ const theme = createMuiTheme({
 export default function PNEdit(props) {
   let { idPutnogNaloga } = useParams();
   const [successMessage, setSuccessMessage] = useState('');
+  const [update, setUpdate] = useState(1);
   function Success(message) {
     setSuccessMessage(message);
+    document.getElementById('submitButton').disabled = true;
+    setTimeout(() => {
+      document.getElementById('redirect').click();
+    }, 2000);
   }
+  const [selected, setSelected] = useState([]);
+
   const [odobreno, setOdobreno] = useState(false);
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
@@ -45,12 +54,43 @@ export default function PNEdit(props) {
       .then((response) => response.json())
       .then((data) => {
         handleExistingValues(data);
+        setSelected(
+          data.zaposlenici.map((zaposlenik) => {
+            return {
+              label: zaposlenik.ime + ' ' + zaposlenik.prezime,
+              value: zaposlenik.idZaposlenika,
+            };
+          })
+        );
+      });
+    fetch(
+      'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Zaposlenik/setAvailability.php',
+      {
+        method: 'GET',
+        mode: 'cors',
+        headers: myHeaders,
+      }
+    )
+      .then((response) => response.text())
+      .then((data) => {});
+    fetch(
+      'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Zaposlenik/getAll.php',
+      {
+        method: 'GET',
+        mode: 'cors',
+        headers: myHeaders,
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        handleZaposlenikChange(data);
       });
   }, []);
   const { handleChange, values, handleSubmit, errors } = useForm(
     validate,
     idPutnogNaloga,
-    Success
+    Success,
+    selected
   );
   const handleExistingValues = (data) => {
     values.polaziste = data.polaziste;
@@ -59,11 +99,28 @@ export default function PNEdit(props) {
     values.datumOdlaska = data.datumOdlaska;
     values.brojDana = data.brojDana;
     values.odobreno = data.odobreno;
-    setOdobreno(data.odobreno === '1' ? true : true);
-    setOdobreno(data.odobreno === '0' ? false : true);
+    setOdobreno(data.odobreno === '1' ? true : false);
+    setUpdate(update + 1);
+  };
+  const [items, setItems] = useState([]);
+
+  const handleZaposlenikChange = (data) => {
+    values.zaposlenici = data;
+    var list = [];
+    values.zaposlenici.map((zaposlenik) => {
+      if (zaposlenik.slobodan === '1') {
+        list.push({
+          label: zaposlenik.ime + ' ' + zaposlenik.prezime,
+          value: zaposlenik.idZaposlenika,
+        });
+      }
+    });
+    setItems(list);
+    setUpdate(update + 1);
   };
 
   const handleSwitch = () => {
+    values.odobreno = !odobreno === true ? '1' : '0';
     setOdobreno(!odobreno);
   };
 
@@ -157,6 +214,27 @@ export default function PNEdit(props) {
                   {errors.brojDana}
                 </FormHelperText>
               )}
+              {values.zaposlenici && (
+                <>
+                  <MultiSelect
+                    options={items}
+                    className='input fullWidth'
+                    name='zaposlenici'
+                    value={selected}
+                    onChange={setSelected}
+                    labelledBy='Zaposlenici'
+                  />
+                  {errors.selected != null ? (
+                    <FormHelperText className='helperText'>
+                      {errors.selected}
+                    </FormHelperText>
+                  ) : (
+                    <FormHelperText className='helperTextSpacing'>
+                      Odabir zaposlenika koji pripadaju putnom nalogu
+                    </FormHelperText>
+                  )}
+                </>
+              )}
               {props.user.role === '1' ? (
                 <FormControlLabel
                   control={
@@ -173,8 +251,9 @@ export default function PNEdit(props) {
               ) : (
                 ''
               )}
-
+              <Link id='redirect' to='/'></Link>
               <Button
+                id='submitButton'
                 fullWidth='true'
                 type='submit'
                 variant='contained'
@@ -183,6 +262,7 @@ export default function PNEdit(props) {
               >
                 Azuriraj putni nalog
               </Button>
+
               {successMessage && (
                 <FormHelperText className='successText'>
                   {successMessage}

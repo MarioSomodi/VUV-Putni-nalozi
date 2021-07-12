@@ -40,7 +40,12 @@ export default function Topbar(props) {
             className={classes.large}
           />
           <IconButton className={classes.iconButton} aria-label='Postavke'>
-            <Settings />
+            <Link
+              className='linkSettinga'
+              to={'/Zaposlenik/Azuriraj/id/' + props.user.id}
+            >
+              <Settings />
+            </Link>
           </IconButton>
           <IconButton
             onClick={props.logOut}

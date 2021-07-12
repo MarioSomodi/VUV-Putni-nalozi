@@ -2,6 +2,10 @@
   display: flex;
 }
 
+body {
+  overflow: hidden;
+}
+
 .authContainer {
   width: 100%;
   height: 100vh;

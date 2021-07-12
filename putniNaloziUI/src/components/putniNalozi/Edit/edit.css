@@ -11,3 +11,27 @@
 .helperTextSpacing {
   margin-left: 17px !important;
 }
+
+.successText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 15px;
+  font-size: 15px !important;
+}
+
+button:disabled {
+  background-color: grey;
+  color: black;
+  cursor: default;
+}
+
+button:disabled:hover {
+  background-color: grey;
+  color: black;
+  cursor: default;
+}
+
+.fullWidth {
+  width: 100%;
+}

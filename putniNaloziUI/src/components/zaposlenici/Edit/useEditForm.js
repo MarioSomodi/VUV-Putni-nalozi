@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
-const useForm = (validate, id, Success, selected) => {
+const useForm = (validate, id, Success) => {
   const [values, setValues] = useState({
-    polaziste: '',
-    odrediste: '',
-    svrha: '',
-    datumOdlaska: '',
-    brojDana: '',
-    odobreno: '',
+    ime: '',
+    prezime: '',
+    korisnickoIme: '',
+    slobodan: '',
+    odjel: '',
+    uloga: '',
   });
   const [errors, setErrors] = useState({});
 
@@ -21,23 +21,21 @@ const useForm = (validate, id, Success, selected) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     var error = validate(values);
-    if (Object.keys(error).length === 0 && selected.length > 0) {
+    if (Object.keys(error).length === 0) {
       const requestOptions = {
         method: 'PUT',
         headers: { 'Content-Type': 'html' },
         body: JSON.stringify({
-          idPutnogNaloga: id,
-          polaziste: values.polaziste,
-          odrediste: values.odrediste,
-          svrha: values.svrha,
-          datumOdlaska: values.datumOdlaska,
-          brojDana: values.brojDana,
-          odobreno: values.odobreno,
-          zaposlenici: selected.map((data) => Number(data.value)),
+          idZaposlenika: id,
+          ime: values.ime,
+          prezime: values.prezime,
+          korisnickoIme: values.korisnickoIme,
+          odjel: values.odjel,
+          uloga: values.uloga,
         }),
       };
       fetch(
-        'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/PutniNalog/update.php',
+        'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Zaposlenik/update.php',
         requestOptions
       )
         .then((response) => response.json())
@@ -50,12 +48,6 @@ const useForm = (validate, id, Success, selected) => {
             error
           );
         });
-    } else {
-      if (selected.length === 0) {
-        error.selected = 'Morate odabrati minimalno jednoga zaposlenika.';
-      } else {
-        error.selected = null;
-      }
     }
     setErrors(error);
   };

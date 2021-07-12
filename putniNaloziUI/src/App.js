@@ -4,10 +4,20 @@ import Sidebar from './components/sidebar/Sidebar';
 import PNSingle from './components/putniNalozi/Single/PNSingle';
 import PNEdit from './components/putniNalozi/Edit/PNEdit';
 import PNCreate from './components/putniNalozi/Create/PNCreate';
+import ZEdit from './components/zaposlenici/Edit/ZEdit';
 import Authentication from './components/authentication/Authentication';
 import './app.css';
 import PutniNalozi from './pages/PutniNalozi/PutniNalozi';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Router, Switch, Route } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import PNStatistics from './components/putniNalozi/Statistics/PNStatistics';
+import Zaposlenici from './pages/Zaposlenici/Zaposlenici';
+
+const history = createBrowserHistory();
+
+function redirect() {
+  history.push('/');
+}
 
 function App() {
   const [user, setUser] = useState(null);
@@ -15,14 +25,17 @@ function App() {
     setUser({
       username: data.username,
       token: data.token,
+      id: data.id,
       role: data.role,
       tokenExpires: data.expires,
       ime: data.ime,
       prezime: data.prezime,
     });
+    redirect();
   }
   function logOut() {
     setUser(null);
+    redirect();
   }
   return (
     <div>
@@ -31,7 +44,7 @@ function App() {
           <Authentication Success={handleSuccessfulLogin} />
         </div>
       ) : (
-        <Router>
+        <Router history={history}>
           <Topbar logOut={logOut} user={user} />
           <div className='container'>
             <Sidebar user={user} />
@@ -47,6 +60,15 @@ function App() {
               </Route>
               <Route path='/PutniNalog/Azuriraj/id/:idPutnogNaloga' exact>
                 <PNEdit user={user} />
+              </Route>
+              <Route path='/PutniNalog/Statistika' exact>
+                <PNStatistics user={user} />
+              </Route>
+              <Route path='/Zaposlenici' exact>
+                <Zaposlenici user={user} />
+              </Route>
+              <Route path='/Zaposlenik/Azuriraj/id/:idZaposlenika' exact>
+                <ZEdit user={user} />
               </Route>
             </Switch>
           </div>

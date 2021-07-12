@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useForm = (validate, id, Success, selected) => {
+const useForm = (validate, Success, selected) => {
   const [values, setValues] = useState({
     polaziste: '',
     odrediste: '',
@@ -23,10 +23,9 @@ const useForm = (validate, id, Success, selected) => {
     var error = validate(values);
     if (Object.keys(error).length === 0 && selected.length > 0) {
       const requestOptions = {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'html' },
         body: JSON.stringify({
-          idPutnogNaloga: id,
           polaziste: values.polaziste,
           odrediste: values.odrediste,
           svrha: values.svrha,
@@ -37,7 +36,7 @@ const useForm = (validate, id, Success, selected) => {
         }),
       };
       fetch(
-        'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/PutniNalog/update.php',
+        'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/PutniNalog/create.php',
         requestOptions
       )
         .then((response) => response.json())

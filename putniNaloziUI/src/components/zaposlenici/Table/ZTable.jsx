@@ -1,7 +1,7 @@
 import { React, useEffect, useState } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
-import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
+import PropTypes from 'prop-types';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import SearchBar from 'material-ui-search-bar';
 import {
@@ -28,11 +28,19 @@ import {
   TableRow,
   IconButton,
   Paper,
+  Avatar,
   TableFooter,
   TablePagination,
 } from '@material-ui/core';
 import './table.css';
 import { Link } from 'react-router-dom';
+
+const useStyles1 = makeStyles((theme) => ({
+  root: {
+    flexShrink: 0,
+    marginLeft: theme.spacing(2.5),
+  },
+}));
 
 const theme = createMuiTheme({
   palette: {
@@ -44,13 +52,6 @@ const theme = createMuiTheme({
     },
   },
 });
-
-const useStyles1 = makeStyles((theme) => ({
-  root: {
-    flexShrink: 0,
-    marginLeft: theme.spacing(2.5),
-  },
-}));
 
 function TablePaginationActions(props) {
   const classes = useStyles1();
@@ -131,27 +132,15 @@ export default function PNTable(props) {
 
   const requestSearch = (searchedVal) => {
     const filteredRows = oRows.filter((row) => {
-      var exist = false;
-      for (var i = 0; i < row.zaposlenici.length; i++) {
-        exist = `${row.zaposlenici[i].ime}${row.zaposlenici[i].prezime}`
-          .toLowerCase()
-          .includes(searchedVal.toLowerCase());
-        if (exist) {
-          break;
-        }
-      }
-      if (exist) {
-        return exist;
-      } else {
-        return `${row.polaziste}${row.odrediste}${row.svrha}${
-          row.datumOdlaska
-        }${row.brojDana}${row.odobreno === '1' ? 'Odobreno' : 'Nije odobren'}`
-          .toLowerCase()
-          .includes(searchedVal.toLowerCase());
-      }
+      return `${row.ime}${row.prezime}${row.korisnickoIme}${row.odjel}${
+        row.uloga
+      }${row.slobodan === '1' ? 'Slobodan' : 'Nije sloboda'}`
+        .toLowerCase()
+        .includes(searchedVal.toLowerCase());
     });
     setRows(filteredRows);
   };
+
   const cancelSearch = () => {
     setSearched('');
     requestSearch('');
@@ -180,13 +169,13 @@ export default function PNTable(props) {
       }
     )
       .then((response) => response.text())
-      .then(() => {});
+      .then((data) => {});
   }, []);
 
   function handleAlert(id) {
     confirmAlert({
-      title: 'Obrisati?',
-      message: 'Sigurno zelite obrisati ovaj putni nalog?',
+      title: 'Otpustiti?',
+      message: 'Sigurno zelite otpustiti ovoga zaposlenika?',
       buttons: [
         {
           label: 'Da',
@@ -202,23 +191,23 @@ export default function PNTable(props) {
   }
   function handleDelete(id) {
     fetch(
-      'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/PutniNalog/delete.php',
+      'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Zaposlenik/delete.php',
       {
         method: 'DELETE',
         mode: 'cors',
         headers: myHeaders,
         body: JSON.stringify({
-          idPutnogNaloga: id,
+          idZaposlenika: id,
         }),
       }
     )
       .then((response) => response.json())
-      .then((data) => updateRows());
+      .then(() => updateRows());
   }
 
   function updateRows() {
     fetch(
-      'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/PutniNalog/getAll.php',
+      'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Zaposlenik/getAll.php',
       {
         method: 'GET',
         mode: 'cors',
@@ -247,16 +236,17 @@ export default function PNTable(props) {
                     onChange={(searchedVal) => requestSearch(searchedVal)}
                     onCancelSearch={() => cancelSearch()}
                   />
-                  <Table aria-label='Putni nalozi tablica'>
+                  <Table aria-label='Zaposlenici tablica'>
                     <TableHead>
                       <TableRow>
-                        <TableCell>R.br.</TableCell>
-                        <TableCell align='left'>Polazište</TableCell>
-                        <TableCell align='left'>Odredište</TableCell>
-                        <TableCell align='left'>Svrha</TableCell>
-                        <TableCell align='left'>Datum odlaska</TableCell>
-                        <TableCell align='left'>Broj dana</TableCell>
-                        <TableCell align='left'>Odobreno</TableCell>
+                        <TableCell align='left'>R.br.</TableCell>
+                        <TableCell align='center'>Profilna slika</TableCell>
+                        <TableCell align='left'>Ime</TableCell>
+                        <TableCell align='left'>Prezime</TableCell>
+                        <TableCell align='left'>Korisnicko ime</TableCell>
+                        <TableCell align='left'>Odjel</TableCell>
+                        <TableCell align='left'>Uloga</TableCell>
+                        <TableCell align='left'>Slobodan</TableCell>
                         <TableCell align='center'>Akcije</TableCell>
                       </TableRow>
                     </TableHead>
@@ -272,18 +262,31 @@ export default function PNTable(props) {
                           <TableCell component='th' scope='row'>
                             {index + 1}
                           </TableCell>
-                          <TableCell align='left'>{row.polaziste}</TableCell>
-                          <TableCell align='left'>{row.odrediste}</TableCell>
-                          <TableCell align='left'>{row.svrha}</TableCell>
-                          <TableCell align='left'>{row.datumOdlaska}</TableCell>
-                          <TableCell align='left'>{row.brojDana}</TableCell>
+                          <TableCell align='center' className='avatarCell'>
+                            <Avatar
+                              alt='Avatar'
+                              src={
+                                'https://eu.ui-avatars.com/api/?background=5724c7&color=fff&rounded=true&bold=true&name=' +
+                                row.ime +
+                                '+' +
+                                row.prezime
+                              }
+                            />
+                          </TableCell>
+                          <TableCell align='left'>{row.ime}</TableCell>
+                          <TableCell align='left'>{row.prezime}</TableCell>
                           <TableCell align='left'>
-                            {row.odobreno === '1'
-                              ? 'Odobreno'
-                              : 'Nije odobreno'}
+                            {row.korisnickoIme}
+                          </TableCell>
+                          <TableCell align='left'>{row.odjel}</TableCell>
+                          <TableCell align='left'>{row.uloga}</TableCell>
+                          <TableCell align='left'>
+                            {row.slobodan === '1'
+                              ? 'Slobodan'
+                              : 'Nije slobodan'}
                           </TableCell>
                           <TableCell align='center'>
-                            <Link to={'/PutniNalog/id/' + row.idPutnogNaloga}>
+                            <Link to={'/Zaposlenik/id/' + row.idZaposlenika}>
                               <IconButton color='primary'>
                                 <Visibility />
                               </IconButton>
@@ -292,8 +295,8 @@ export default function PNTable(props) {
                               <>
                                 <Link
                                   to={
-                                    '/PutniNalog/Azuriraj/id/' +
-                                    row.idPutnogNaloga
+                                    '/Zaposlenik/Azuriraj/id/' +
+                                    row.idZaposlenika
                                   }
                                 >
                                   <IconButton color='primary'>
@@ -301,9 +304,7 @@ export default function PNTable(props) {
                                   </IconButton>
                                 </Link>
                                 <IconButton
-                                  onClick={() =>
-                                    handleAlert(row.idPutnogNaloga)
-                                  }
+                                  onClick={() => handleAlert(row.idZaposlenika)}
                                   color='primary'
                                 >
                                   <Delete />

@@ -1,0 +1,48 @@
+.statistics {
+  flex: 4;
+  margin: 25px;
+}
+
+.statContainer {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+
+.pie {
+  align-items: center;
+}
+
+.pie p,
+.pie h4 {
+  text-align: center;
+}
+
+.stat {
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+}
+
+.statContainer .content {
+  margin: 20px;
+}
+
+.statContainer .content h4 {
+  font-size: 20px;
+}
+
+.statContainer .content .stat .info {
+  font-size: 30px;
+}
+
+.statContainer .content .stat .icon {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.statContainer .content p {
+  font-size: 15px;
+  color: grey;
+}

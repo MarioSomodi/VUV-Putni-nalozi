@@ -23,7 +23,7 @@ export default function Sidebar(props) {
             {
               label: 'Statistika',
               icon: <Timeline className='sidebarIcon' />,
-              route: '/',
+              route: '/PutniNalog/Statistika',
             },
           ]}
         />
@@ -35,7 +35,7 @@ export default function Sidebar(props) {
                 {
                   label: 'Prikaži',
                   icon: <List className='sidebarIcon' />,
-                  route: '/',
+                  route: '/Zaposlenici',
                 },
                 {
                   label: 'Zaposli',

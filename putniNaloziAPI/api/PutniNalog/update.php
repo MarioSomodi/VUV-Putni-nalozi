@@ -41,17 +41,6 @@
     if($allExist == true){
         if(count($putniNalog->zaposlenici) != count(array_unique($putniNalog->zaposlenici))){$noDuplicates = false;}
         if($noDuplicates == false){$allExist = false;}
-        if($noDuplicates == true){
-            foreach($putniNalog->zaposlenici as $zaposlenikId){
-                $zaposlenik->idZaposlenika = $zaposlenikId;
-                $zaposlenik->readSingle();
-                if($zaposlenik->slobodan == 0){
-                    $allExist = false;
-                    $allFree = false;
-                    break;
-                }
-            }
-        }
     }
     if(in_array($putniNalog->idPutnogNaloga, $putniNaloziIds_arr)){
         if($allExist){

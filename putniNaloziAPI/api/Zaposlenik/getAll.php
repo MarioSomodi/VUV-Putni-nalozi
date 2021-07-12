@@ -26,6 +26,7 @@
                     'idZaposlenika' => $idZaposlenika,
                     'ime' => $ime,
                     'prezime' => $prezime,
+                    'korisnickoIme' => $korisnickoIme,
                     'odjel' => $odjel,
                     'uloga' => $uloga,
                     'slobodan' => $slobodan,

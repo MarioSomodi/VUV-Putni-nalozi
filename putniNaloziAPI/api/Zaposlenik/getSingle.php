@@ -22,7 +22,9 @@
                 'odjel' => $zaposlenikObj->odjel,
                 'uloga' => $zaposlenikObj->uloga,
                 'slobodan' => $zaposlenikObj->slobodan,
-                'role' => $zaposlenikObj->$role
+                'korisnickoIme' => $zaposlenikObj->korisnickoIme,
+                'idOdjela' => $zaposlenikObj->idOdjela,                
+                'idUloge' => $zaposlenikObj->idUloge,
             );
             echo json_encode($zaposlenik);
         }else{

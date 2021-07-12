@@ -23,27 +23,26 @@
             while($row = $resultPutniNalozi->fetch(PDO::FETCH_ASSOC)){
                 extract($row);
                 if(!in_array($idPutnogNaloga, array_column($putniNalozi, 'idPutnogNaloga'))){
-                    $putniNalog = array(
+                    $putniNalog_item = array(
                         'idPutnogNaloga' => $idPutnogNaloga,
                         'polaziste' => $polaziste,
                         'odrediste' => $odrediste,
                         'svrha' => $svrha,
                         'datumOdlaska' => $datumOdlaska,
                         'brojDana' => $brojDana,
-                        'zaposlenici' => array(),
-                        'odobreno' => $odobreno
-                    );
-                    array_push($putniNalozi, $putniNalog);
-                    $index++;
+                        'odobreno' => $odobreno,
+                        'zaposlenici' => array());
+                    array_push($putniNalozi, $putniNalog_item);
                 }
-                $zaposlenik = array(
+                $index = array_search($idPutnogNaloga, array_column($putniNalozi, 'idPutnogNaloga'));
+                $zaposlenik_item = array(
                     'idZaposlenika' => $idZaposlenika,
                     'ime' => $ime,
                     'prezime' => $prezime,
                     'odjel' => $odjel,
                     'uloga' => $uloga,
                 );
-                array_push($putniNalozi[$index]['zaposlenici'], $zaposlenik);
+                array_push($putniNalozi[$index]['zaposlenici'], $zaposlenik_item);
             }
             echo json_encode($putniNalozi);
         }else{

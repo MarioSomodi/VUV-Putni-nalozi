@@ -11,7 +11,6 @@
         $numPutniNalozi = $resultPutniNalozi->rowCount();
         //Checking if there is data fill the arrays if not give an error message.
         if($numPutniNalozi > 0){
-            $index = -1;
             while($row = $resultPutniNalozi->fetch(PDO::FETCH_ASSOC)){
                 extract($row);
                 if(!in_array($idPutnogNaloga, array_column($putniNalozi, 'idPutnogNaloga'))){
@@ -22,12 +21,11 @@
                         'svrha' => $svrha,
                         'datumOdlaska' => $datumOdlaska,
                         'brojDana' => $brojDana,
-                        'zaposlenici' => array(),
-                        'odobreno' => $odobreno
-                    );
+                        'odobreno' => $odobreno,
+                        'zaposlenici' => array());
                     array_push($putniNalozi, $putniNalog_item);
-                    $index++;
                 }
+                $index = array_search($idPutnogNaloga, array_column($putniNalozi, 'idPutnogNaloga'));
                 $zaposlenik_item = array(
                     'idZaposlenika' => $idZaposlenika,
                     'ime' => $ime,

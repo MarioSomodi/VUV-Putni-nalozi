@@ -13,7 +13,6 @@
     $zaposlenikObj = new Zaposlenik($database);
     foreach($zaposleniciIds_arr as $zaposlenikId){
         $zaposlenikObj->idZaposlenika = $zaposlenikId;
-        $zaposlenikObj->readSingle();
         foreach($putniNalozi as $putniNalog){
             $zaposlenikExist = false;
             foreach($putniNalog['zaposlenici'] as $zaposlenik){
@@ -27,15 +26,18 @@
                 $endDate->add(new DateInterval('P'.$putniNalog['brojDana'].'D'));
                 if($putniNalog['odobreno'] == 0){
                     $zaposlenikObj->slobodan = 1;
+                    $zaposlenikObj->updateAvailable();
                 }else{
                     if($endDate < new DateTime('NOW')){
                         $zaposlenikObj->slobodan = 1;
+                        $zaposlenikObj->updateAvailable();
                     }else{
                         $zaposlenikObj->slobodan = 0;
+                        $zaposlenikObj->updateAvailable();
+                        break;
                     }
                 }
             }
         }
-        $zaposlenikObj->updateAvailable();
     }
 ?>
