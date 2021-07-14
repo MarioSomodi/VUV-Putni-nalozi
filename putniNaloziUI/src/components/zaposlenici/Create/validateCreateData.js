@@ -15,10 +15,12 @@ export default function validateInfo(values) {
   if (!values.uloga.trim()) {
     errors.uloga = 'Morate odabrati ulogu.';
   }
-  if (values.rola === null) {
-    errors.rolaToSet = values.rolaToSet;
-  } else if (!values.rola === '') {
-    errors.rola = 'Morate odabrati rolu.';
+  if (!values.lozinka.trim()) {
+    errors.lozinka = 'Lozinka je obavezna.';
+  } else if (!values.lozinka.length > 6) {
+    errors.lozinka = 'Lozinka mora imati vise od 6 karaktera.';
+  } else if (values.lozinka !== values.lozinka2) {
+    errors.lozinka2 = 'Lozinke se nepodudaraju.';
   }
   return errors;
 }

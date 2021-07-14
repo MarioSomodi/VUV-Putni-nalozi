@@ -1,8 +1,7 @@
 import { React, useState, useEffect } from 'react';
-import './edit.css';
-import { useParams } from 'react-router-dom';
-import useForm from './useEditForm';
-import validate from './validateEditData';
+import './create.css';
+import useForm from './useCreateForm';
+import validate from './validateCreateData';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import {
   Paper,
@@ -26,9 +25,7 @@ const theme = createMuiTheme({
 });
 
 export default function PNEdit(props) {
-  let { idZaposlenika } = useParams();
   const [successMessage, setSuccessMessage] = useState('');
-  const [update, setUpdate] = useState(1);
   function Success(message) {
     setSuccessMessage(message);
     document.getElementById('submitButton').disabled = true;
@@ -42,19 +39,6 @@ export default function PNEdit(props) {
   myHeaders.append('Content-Type', 'application/json');
   myHeaders.append('Authorization', 'Bearer ' + props.user.token);
   useEffect(() => {
-    fetch(
-      'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Zaposlenik/getSingle.php?idZaposlenika=' +
-        idZaposlenika,
-      {
-        method: 'GET',
-        mode: 'cors',
-        headers: myHeaders,
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        handleExistingValues(data);
-      });
     fetch(
       'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Odjel/getAll.php',
       {
@@ -78,23 +62,8 @@ export default function PNEdit(props) {
   }, []);
   const { handleChange, values, handleSubmit, errors } = useForm(
     validate,
-    idZaposlenika,
-    Success,
-    props.user
+    Success
   );
-  const handleExistingValues = (data) => {
-    values.ime = data.ime;
-    values.prezime = data.prezime;
-    values.korisnickoIme = data.korisnickoIme;
-    values.slobodan = data.slobodan;
-    values.odjel = data.idOdjela;
-    values.uloga = data.idUloge;
-    if (props.user.role === '1') {
-      values.rola = data.rola;
-    }
-    values.rolaToSet = data.rola;
-    setUpdate(update + 1);
-  };
 
   return (
     <div className='editZaposlenici'>
@@ -154,10 +123,43 @@ export default function PNEdit(props) {
                     </FormHelperText>
                   )}
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth='true'
+                    type='password'
+                    name='lozinka'
+                    variant='outlined'
+                    label='Lozinka'
+                    className='input'
+                    value={values.lozinka}
+                    onChange={handleChange}
+                  />
+                  {errors.lozinka && (
+                    <FormHelperText className='helperText'>
+                      {errors.lozinka}
+                    </FormHelperText>
+                  )}
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth='true'
+                    type='password'
+                    name='lozinka2'
+                    variant='outlined'
+                    label='Potvrdi lozinku'
+                    className='input'
+                    value={values.lozinka2}
+                    onChange={handleChange}
+                  />
+                  {errors.lozinka2 && (
+                    <FormHelperText className='helperText'>
+                      {errors.lozinka2}
+                    </FormHelperText>
+                  )}
+                </Grid>
+                <Grid item xs={6}>
                   {odjeli && (
                     <>
-                      {}
                       <FormControl
                         variant='outlined'
                         className='input'
@@ -167,10 +169,10 @@ export default function PNEdit(props) {
                         <Select
                           labelId='labelOdjel'
                           name='odjel'
+                          label='Odjel'
                           fullWidth='true'
                           value={values.odjel}
                           onChange={handleChange}
-                          label='Odjel'
                         >
                           {odjeli.map((odjel) => (
                             <MenuItem value={odjel.id}>{odjel.odjel}</MenuItem>
@@ -185,7 +187,7 @@ export default function PNEdit(props) {
                     </>
                   )}
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={6}>
                   {uloge && (
                     <>
                       <FormControl
@@ -196,11 +198,11 @@ export default function PNEdit(props) {
                         <InputLabel id='labelUloga'>Uloga</InputLabel>
                         <Select
                           labelId='labelUloga'
+                          label='uloga'
                           name='uloga'
                           fullWidth='true'
                           value={values.uloga}
                           onChange={handleChange}
-                          label='Uloga'
                         >
                           {uloge.map((uloga) => (
                             <MenuItem value={uloga.id}>{uloga.uloga}</MenuItem>
@@ -254,8 +256,9 @@ export default function PNEdit(props) {
                 color='primary'
                 className='input'
               >
-                Azuriraj podatke zaposlenika
+                Zaposli zaposlenika
               </Button>
+
               {successMessage && (
                 <FormHelperText className='successText'>
                   {successMessage}

@@ -23,6 +23,7 @@
     $zaposlenik->odjel = $data->odjel;
     $zaposlenik->uloga = $data->uloga;
     $zaposlenik->korisnickoIme = $data->korisnickoIme;
+    $zaposlenik->role = $data->rola;
 
     if(in_array($zaposlenik->idZaposlenika, $zaposleniciIds_arr)){
         try{

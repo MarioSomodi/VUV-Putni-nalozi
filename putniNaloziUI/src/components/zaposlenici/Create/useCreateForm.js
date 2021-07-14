@@ -1,15 +1,15 @@
 import { useState } from 'react';
 
-const useForm = (validate, id, Success, user) => {
+const useForm = (validate, Success) => {
   const [values, setValues] = useState({
     ime: '',
     prezime: '',
     korisnickoIme: '',
-    slobodan: '',
     odjel: '',
     uloga: '',
-    rolaToSet: '',
-    rola: user.role === '1' ? '' : null,
+    rola: 0,
+    lozinka: '',
+    lozinka2: '',
   });
   const [errors, setErrors] = useState({});
 
@@ -23,35 +23,27 @@ const useForm = (validate, id, Success, user) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     var error = validate(values);
-    if (error.hasOwnProperty('rolaToSet') && Object.keys(error).length === 1) {
-      values.rola = values.rolaToSet;
-      error = {};
-    }
     if (Object.keys(error).length === 0) {
       const requestOptions = {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'json' },
         body: JSON.stringify({
-          idZaposlenika: id,
           ime: values.ime,
           prezime: values.prezime,
           korisnickoIme: values.korisnickoIme,
           odjel: values.odjel,
           uloga: values.uloga,
+          lozinka: values.lozinka,
           rola: values.rola,
         }),
       };
       fetch(
-        'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Zaposlenik/update.php',
+        'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Zaposlenik/create.php',
         requestOptions
       )
         .then((response) => response.json())
         .then((data) => {
           Success(data.message);
-          if (id === user.id) {
-            window.location.href = 'http://localhost:3000/';
-            console.log('gerere');
-          }
         })
         .catch((error) => {
           console.log(

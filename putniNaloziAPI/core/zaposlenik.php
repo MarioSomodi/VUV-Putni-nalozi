@@ -16,6 +16,8 @@
         public $korisnickoIme;
         public $idUloge;
         public $idOdjela;
+        public $lozinka;
+        public $prvaPrijava;
 
         public function __construct($db){
             $this->connection = $db;
@@ -40,7 +42,7 @@
 
         public function readSingle(){
             $query = '
-                SELECT z.idZaposlenika, z.korisnickoIme, z.ime, z.prezime, z.slobodan, z.rola, o.odjel, o.id AS idOdjela, u.uloga, u.id AS idUloge FROM zaposlenici z
+                SELECT z.prvaPrijavaUSustav, z.idZaposlenika, z.korisnickoIme, z.ime, z.prezime, z.slobodan, z.rola, o.odjel, o.id AS idOdjela, u.uloga, u.id AS idUloge FROM zaposlenici z
                 JOIN odjeli o 
                 ON z.odjel = o.id
                 JOIN uloge u
@@ -63,10 +65,11 @@
             $this->korisnickoIme = $row['korisnickoIme'];
             $this->idOdjela = $row['idOdjela'];
             $this->idUloge = $row['idUloge'];
+            $this->prvaPrijava = $row['prvaPrijavaUSustav'];
         }
 
         public function create(){
-            $query = 'INSERT INTO '.$this->table.' SET ime = :ime, prezime = :prezime, odjel = :odjel, uloga = :uloga, slobodan = 1;';
+            $query = 'INSERT INTO '.$this->table.' SET ime = :ime, korisnickoIme = :korisnickoIme, prezime = :prezime, odjel = :odjel, uloga = :uloga, slobodan = 1, rola = :rola, lozinka = :lozinka;';
             $statment = $this->connection->prepare($query);
             
             //Sets all properties.
@@ -74,12 +77,18 @@
             $this->prezime = htmlspecialchars(strip_tags($this->prezime));
             $this->odjel = htmlspecialchars(strip_tags($this->odjel));
             $this->uloga = htmlspecialchars(strip_tags($this->uloga));
+            $this->lozinka = htmlspecialchars(strip_tags($this->lozinka));
+            $this->korisnickoIme = htmlspecialchars(strip_tags($this->korisnickoIme));
+            $this->role = htmlspecialchars(strip_tags($this->role));
             
             //Bind all the parameters of the query.
             $statment->bindParam(':ime', $this->ime);
+            $statment->bindParam(':lozinka', $this->lozinka);
+            $statment->bindParam(':korisnickoIme', $this->korisnickoIme);
             $statment->bindParam(':prezime', $this->prezime);
             $statment->bindParam(':odjel', $this->odjel);
-            $statment->bindParam(':uloga', $this->uloga);
+            $statment->bindParam(':uloga', $this->uloga); 
+            $statment->bindParam(':rola', $this->role);
             
             //Try to execute the query if it fails return the error/false on success return true.
             if($statment->execute()){
@@ -89,7 +98,7 @@
             }
         }
         public function update(){
-            $query = 'UPDATE '.$this->table.' SET ime = :ime, prezime = :prezime, odjel = :odjel, uloga = :uloga, korisnickoIme = :korisnickoIme WHERE idZaposlenika = :idZaposlenika;';
+            $query = 'UPDATE '.$this->table.' SET ime = :ime, prezime = :prezime, rola = :rola, odjel = :odjel, uloga = :uloga, korisnickoIme = :korisnickoIme WHERE idZaposlenika = :idZaposlenika;';
             $statment = $this->connection->prepare($query);
             
             //Sets all properties.
@@ -99,6 +108,7 @@
             $this->odjel = htmlspecialchars(strip_tags($this->odjel));
             $this->uloga = htmlspecialchars(strip_tags($this->uloga));
             $this->korisnickoIme = htmlspecialchars(strip_tags($this->korisnickoIme));
+            $this->role = htmlspecialchars(strip_tags($this->role));
             
             //Bind all the parameters of the query.
             $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
@@ -107,6 +117,7 @@
             $statment->bindParam(':odjel', $this->odjel);
             $statment->bindParam(':uloga', $this->uloga);
             $statment->bindParam(':korisnickoIme', $this->korisnickoIme);
+            $statment->bindParam(':rola', $this->role);
             
             //Try to execute the query if it fails return the error/false on success return true.
             if($statment->execute()){

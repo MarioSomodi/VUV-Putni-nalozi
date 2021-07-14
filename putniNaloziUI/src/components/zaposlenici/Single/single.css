@@ -1,0 +1,57 @@
+.infoOfEmp {
+  padding: 20px;
+}
+
+.empHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.empHeader .MuiAvatar-root {
+  width: 90px;
+  height: 90px;
+}
+
+.empNameAndRole {
+  padding-left: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+}
+
+.empNameAndRole .name {
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.empNameAndRole .role {
+  font-size: 20px;
+  padding-left: 2px;
+}
+
+.data {
+  padding-top: 10px;
+}
+
+.titleOfInfo {
+  color: grey;
+  font-size: 18px;
+  padding-top: 10px;
+}
+
+.contentOfInfo {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  font-size: 19px;
+  font-weight: 600;
+  padding-top: 10px;
+}
+
+.contentOfInfo svg {
+  margin-right: 10px;
+  padding: 1px;
+}

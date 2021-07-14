@@ -25,6 +25,8 @@
                 'korisnickoIme' => $zaposlenikObj->korisnickoIme,
                 'idOdjela' => $zaposlenikObj->idOdjela,                
                 'idUloge' => $zaposlenikObj->idUloge,
+                'prvaPrijava' => $zaposlenikObj->prvaPrijava,
+                'rola' => $zaposlenikObj->role,
             );
             echo json_encode($zaposlenik);
         }else{

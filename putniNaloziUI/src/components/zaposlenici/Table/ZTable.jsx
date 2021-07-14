@@ -18,6 +18,7 @@ import {
   LastPage,
   KeyboardArrowLeft,
   KeyboardArrowRight,
+  LaptopWindows,
 } from '@material-ui/icons';
 import {
   Table,
@@ -203,6 +204,9 @@ export default function PNTable(props) {
     )
       .then((response) => response.json())
       .then(() => updateRows());
+    if (props.user.id === id) {
+      window.location.href = 'http://localhost:3000/';
+    }
   }
 
   function updateRows() {

@@ -41,7 +41,7 @@ export default function Topbar(props) {
           />
           <IconButton className={classes.iconButton} aria-label='Postavke'>
             <Link
-              className='linkSettinga'
+              className='linkSetting'
               to={'/Zaposlenik/Azuriraj/id/' + props.user.id}
             >
               <Settings />

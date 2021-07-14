@@ -5,6 +5,8 @@ import PNSingle from './components/putniNalozi/Single/PNSingle';
 import PNEdit from './components/putniNalozi/Edit/PNEdit';
 import PNCreate from './components/putniNalozi/Create/PNCreate';
 import ZEdit from './components/zaposlenici/Edit/ZEdit';
+import ZCreate from './components/zaposlenici/Create/ZCreate';
+import ZStatistics from './components/zaposlenici/Statistics/ZStatistics';
 import Authentication from './components/authentication/Authentication';
 import './app.css';
 import PutniNalozi from './pages/PutniNalozi/PutniNalozi';
@@ -12,6 +14,7 @@ import { Router, Switch, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import PNStatistics from './components/putniNalozi/Statistics/PNStatistics';
 import Zaposlenici from './pages/Zaposlenici/Zaposlenici';
+import ZSingle from './components/zaposlenici/Single/ZSingle';
 
 const history = createBrowserHistory();
 
@@ -67,8 +70,17 @@ function App() {
               <Route path='/Zaposlenici' exact>
                 <Zaposlenici user={user} />
               </Route>
+              <Route path='/Zaposlenik/id/:idZaposlenika' exact>
+                <ZSingle user={user} />
+              </Route>
               <Route path='/Zaposlenik/Azuriraj/id/:idZaposlenika' exact>
                 <ZEdit user={user} />
+              </Route>
+              <Route path='/Zaposlenik/Novi' exact>
+                <ZCreate user={user} />
+              </Route>
+              <Route path='/Zaposlenik/Statistika' exact>
+                <ZStatistics user={user} />
               </Route>
             </Switch>
           </div>

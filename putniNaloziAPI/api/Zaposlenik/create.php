@@ -18,6 +18,9 @@
     $zaposlenik->prezime = $data->prezime;
     $zaposlenik->odjel = $data->odjel;
     $zaposlenik->uloga = $data->uloga;
+    $zaposlenik->lozinka = $data->lozinka;
+    $zaposlenik->korisnickoIme = $data->korisnickoIme;
+    $zaposlenik->role = $data->rola;
 
     try{
         $zaposlenik->create();

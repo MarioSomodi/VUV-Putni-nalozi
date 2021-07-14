@@ -19,3 +19,7 @@ body {
 .others {
   flex: 4;
 }
+
+#printWindow {
+  overflow: hidden;
+}

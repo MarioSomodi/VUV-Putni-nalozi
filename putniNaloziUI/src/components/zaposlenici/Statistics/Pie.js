@@ -2,18 +2,18 @@ import { React, useState, useCallback } from 'react';
 import { PieChart, Pie, Sector } from 'recharts';
 
 const getData = (data) => {
-  var numOdobreno = 0;
-  var numNeodobreno = 0;
-  data.forEach((nalog) => {
-    if (nalog.odobreno === '1') {
-      numOdobreno++;
+  var numSlobodan = 0;
+  var numZauzet = 0;
+  data.forEach((zaposlenik) => {
+    if (zaposlenik.slobodan === '1') {
+      numSlobodan++;
     } else {
-      numNeodobreno++;
+      numZauzet++;
     }
   });
   return [
-    { name: 'Odobreno', value: numOdobreno },
-    { name: 'Nije odobreno', value: numNeodobreno },
+    { name: 'Slobodan', value: numSlobodan },
+    { name: 'Nije slobodan', value: numZauzet },
   ];
 };
 
@@ -76,9 +76,9 @@ const renderActiveShape = (props) => {
         y={ey}
         textAnchor={textAnchor}
         fill='#333'
-      >{`Broj ${
-        payload.name === 'Odobreno' ? 'odobrenih' : 'neodobrenih'
-      } naloga: ${value}`}</text>
+      >{`Udio ${
+        payload.name === 'Slobodan' ? 'slobodnih' : 'zauzetih'
+      } zaposlenika: ${value}`}</text>
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
@@ -87,7 +87,7 @@ const renderActiveShape = (props) => {
         fill='#999'
       >
         {`(${(percent * 100).toFixed(2)}% ${
-          payload.name === 'Odobreno' ? 'je odobreno' : 'nije odobreno'
+          payload.name === 'Slobodan' ? 'je slobodno' : 'je zauzeto'
         })`}
       </text>
     </g>
@@ -104,11 +104,11 @@ export default function PNPie(props) {
   );
   return (
     <>
-      <PieChart width={650} height={400}>
+      <PieChart width={700} height={400}>
         <Pie
           activeIndex={activeIndex}
           activeShape={renderActiveShape}
-          data={getData(props.putniNalozi)}
+          data={getData(props.zaposlenici)}
           cx='50%'
           cy='50%'
           innerRadius={60}

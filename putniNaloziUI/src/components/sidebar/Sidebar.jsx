@@ -40,12 +40,12 @@ export default function Sidebar(props) {
                 {
                   label: 'Zaposli',
                   icon: <PersonAdd className='sidebarIcon' />,
-                  route: '/',
+                  route: '/Zaposlenik/Novi',
                 },
                 {
                   label: 'Statistika',
                   icon: <Timeline className='sidebarIcon' />,
-                  route: '/',
+                  route: '/Zaposlenik/Statistika',
                 },
               ]}
             />
