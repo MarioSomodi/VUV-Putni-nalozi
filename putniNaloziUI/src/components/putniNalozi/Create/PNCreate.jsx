@@ -39,6 +39,7 @@ export default function PNCreate(props) {
   );
 
   useEffect(() => {
+    values.odobreno = false;
     fetch(
       'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Zaposlenik/setAvailability.php',
       {
@@ -77,7 +78,7 @@ export default function PNCreate(props) {
   }, []);
 
   const handleSwitch = () => {
-    values.odobreno = !odobreno === true ? '1' : '0';
+    values.odobreno = !odobreno;
     setOdobreno(!odobreno);
   };
 
