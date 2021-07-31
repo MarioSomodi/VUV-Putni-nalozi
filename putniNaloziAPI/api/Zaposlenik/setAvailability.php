@@ -22,19 +22,21 @@
             }
             if($zaposlenikExist)
             {
+                echo "usao : ".$putniNalog['idPutnogNaloga'];
+                $startDate = new DateTime($putniNalog['datumOdlaska']);
                 $endDate = new DateTime($putniNalog['datumOdlaska']);
                 $endDate->add(new DateInterval('P'.$putniNalog['brojDana'].'D'));
                 if($putniNalog['odobreno'] == 0){
                     $zaposlenikObj->slobodan = 1;
                     $zaposlenikObj->updateAvailable();
                 }else{
-                    if($endDate < new DateTime('NOW')){
-                        $zaposlenikObj->slobodan = 1;
-                        $zaposlenikObj->updateAvailable();
-                    }else{
+                    if(new DateTime('NOW') >= $startDate && new DateTime('NOW') <= $endDate){
                         $zaposlenikObj->slobodan = 0;
                         $zaposlenikObj->updateAvailable();
                         break;
+                    }else{
+                        $zaposlenikObj->slobodan = 1;
+                        $zaposlenikObj->updateAvailable();
                     }
                 }
             }
