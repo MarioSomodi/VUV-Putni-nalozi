@@ -31,7 +31,7 @@ const useForm = (validate, Success, selected) => {
           svrha: values.svrha,
           datumOdlaska: values.datumOdlaska,
           brojDana: values.brojDana,
-          odobreno: values.odobreno,
+          odobreno: 1,
           zaposlenici: selected.map((data) => Number(data.value)),
         }),
       };
@@ -41,7 +41,7 @@ const useForm = (validate, Success, selected) => {
       )
         .then((response) => response.json())
         .then((data) => {
-          Success(data.message);
+          Success(data.error);
         })
         .catch((error) => {
           console.log(

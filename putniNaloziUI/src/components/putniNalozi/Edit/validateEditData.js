@@ -11,14 +11,7 @@ export default function validateInfo(values) {
   }
   if (!values.datumOdlaska.trim()) {
     errors.datumOdlaska = 'Datum odlaska je obavezan.';
-  } // else {
-  //   var inputDate = new Date(values.datumOdlaska);
-  //   var currentDate = new Date();
-  //   if (inputDate.setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) {
-  //     errors.datumOdlaska =
-  //       'Datum odlaska ne moze biti manji od danasnjeg datuma.';
-  //   }
-  // }
+  }
   if (!values.brojDana.trim()) {
     errors.brojDana = 'Broj dana je obavezan.';
   } else if (values.brojDana <= 0) {

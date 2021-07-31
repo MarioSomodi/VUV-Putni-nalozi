@@ -15,6 +15,7 @@ const theme = createMuiTheme({
 
 export default function PNStatistics(props) {
   const [putniNalozi, setPutniNalozi] = useState();
+
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
   myHeaders.append('Authorization', 'Bearer ' + props.user.token);

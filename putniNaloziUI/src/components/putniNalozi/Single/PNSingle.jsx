@@ -6,6 +6,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { ArrowRightAlt, Check, Close, Visibility } from '@material-ui/icons';
 import { IconButton, Avatar, Button } from '@material-ui/core';
 import ReactToPrint from 'react-to-print';
+import { Link } from 'react-router-dom';
 
 const theme = createMuiTheme({
   palette: {
@@ -16,12 +17,14 @@ const theme = createMuiTheme({
 });
 
 export default function PNSingle(props) {
+  let { idPutnogNaloga } = useParams();
   const [putniNalog, setPutniNalog] = useState(null);
   const componentRef = useRef();
-  let { idPutnogNaloga } = useParams();
+
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
   myHeaders.append('Authorization', 'Bearer ' + props.user.token);
+
   useEffect(() => {
     fetch(
       'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/PutniNalog/getSingle.php?idPutnogNaloga=' +
@@ -35,6 +38,7 @@ export default function PNSingle(props) {
       .then((response) => response.json())
       .then((data) => setPutniNalog(data));
   }, []);
+
   return (
     <div className='single'>
       <MuiThemeProvider theme={theme}>
@@ -103,9 +107,11 @@ export default function PNSingle(props) {
                             {zaposlenik.odjel + ' | ' + zaposlenik.uloga}
                           </span>
                         </div>
-                        <IconButton>
-                          <Visibility color='primary' />
-                        </IconButton>
+                        <Link to={'/Zaposlenik/id/' + zaposlenik.idZaposlenika}>
+                          <IconButton>
+                            <Visibility color='primary' />
+                          </IconButton>
+                        </Link>
                       </div>
                     ))
                   : 'Ovaj putni nalog trenutno nema niti jednoga zaposlenika.'}

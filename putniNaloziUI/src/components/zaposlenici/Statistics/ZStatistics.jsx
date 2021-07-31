@@ -1,7 +1,7 @@
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { Grid, Paper } from '@material-ui/core';
 import { React, useState, useEffect } from 'react';
-import { Today, Person, Reorder } from '@material-ui/icons';
+import { Person } from '@material-ui/icons';
 import './statistics.css';
 import Pie from './Pie';
 
@@ -15,7 +15,7 @@ const theme = createMuiTheme({
 
 export default function PNStatistics(props) {
   const [zaposlenici, setZaposlenici] = useState();
-  const [numPutninalozi, setnumPutniNalozi] = useState(0);
+
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
   myHeaders.append('Authorization', 'Bearer ' + props.user.token);

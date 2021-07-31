@@ -18,7 +18,6 @@ import {
   LastPage,
   KeyboardArrowLeft,
   KeyboardArrowRight,
-  LaptopWindows,
 } from '@material-ui/icons';
 import {
   Table,
@@ -159,6 +158,7 @@ export default function PNTable(props) {
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
   myHeaders.append('Authorization', 'Bearer ' + props.user.token);
+
   useEffect(() => {
     updateRows();
     fetch(
@@ -190,6 +190,7 @@ export default function PNTable(props) {
       closeOnClickOutside: true,
     });
   }
+
   function handleDelete(id) {
     fetch(
       'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Zaposlenik/delete.php',
@@ -205,7 +206,7 @@ export default function PNTable(props) {
       .then((response) => response.json())
       .then(() => updateRows());
     if (props.user.id === id) {
-      window.location.href = 'http://localhost:3000/';
+      window.location.reload();
     }
   }
 

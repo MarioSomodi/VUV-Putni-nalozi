@@ -55,17 +55,12 @@ export default function Sidebar(props) {
                 {
                   label: 'Prikaži',
                   icon: <List className='sidebarIcon' />,
-                  route: '/',
+                  route: '/Odjeli-i-Uloge',
                 },
                 {
                   label: 'Kreiraj',
                   icon: <Add className='sidebarIcon' />,
-                  route: '/',
-                },
-                {
-                  label: 'Statistika',
-                  icon: <Timeline className='sidebarIcon' />,
-                  route: '/',
+                  route: '/Odjel-i-Uloga/Kreiraj',
                 },
               ]}
             />

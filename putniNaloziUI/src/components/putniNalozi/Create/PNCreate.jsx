@@ -60,14 +60,18 @@ export default function PNCreate(props) {
       .then((response) => response.json())
       .then((data) => {
         setItems(
-          data.map((zaposlenik) => {
-            if (zaposlenik.slobodan === '1') {
-              return {
-                label: zaposlenik.ime + ' ' + zaposlenik.prezime,
-                value: zaposlenik.idZaposlenika,
-              };
-            }
-          })
+          data
+            .map((zaposlenik) => {
+              if (zaposlenik.slobodan === '1') {
+                return {
+                  label: zaposlenik.ime + ' ' + zaposlenik.prezime,
+                  value: zaposlenik.idZaposlenika,
+                };
+              } else {
+                return null;
+              }
+            })
+            .filter((x) => !!x)
         );
       });
   }, []);

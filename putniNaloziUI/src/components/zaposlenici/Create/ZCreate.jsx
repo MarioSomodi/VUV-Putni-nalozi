@@ -26,6 +26,9 @@ const theme = createMuiTheme({
 
 export default function PNEdit(props) {
   const [successMessage, setSuccessMessage] = useState('');
+  const [odjeli, setOdjeli] = useState([]);
+  const [uloge, setUloge] = useState([]);
+
   function Success(message) {
     setSuccessMessage(message);
     document.getElementById('submitButton').disabled = true;
@@ -33,11 +36,11 @@ export default function PNEdit(props) {
       document.getElementById('redirect').click();
     }, 2000);
   }
-  const [odjeli, setOdjeli] = useState([]);
-  const [uloge, setUloge] = useState([]);
+
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
   myHeaders.append('Authorization', 'Bearer ' + props.user.token);
+
   useEffect(() => {
     fetch(
       'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Odjel/getAll.php',
@@ -60,6 +63,7 @@ export default function PNEdit(props) {
       .then((response) => response.json())
       .then((data) => setUloge(data));
   }, []);
+
   const { handleChange, values, handleSubmit, errors } = useForm(
     validate,
     Success

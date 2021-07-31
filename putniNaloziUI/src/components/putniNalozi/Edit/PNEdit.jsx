@@ -27,7 +27,11 @@ const theme = createMuiTheme({
 export default function PNEdit(props) {
   let { idPutnogNaloga } = useParams();
   const [successMessage, setSuccessMessage] = useState('');
+  const [selected, setSelected] = useState([]);
+  const [odobreno, setOdobreno] = useState(false);
+  const [items, setItems] = useState([]);
   const [update, setUpdate] = useState(1);
+
   function Success(message) {
     setSuccessMessage(message);
     document.getElementById('submitButton').disabled = true;
@@ -35,12 +39,11 @@ export default function PNEdit(props) {
       document.getElementById('redirect').click();
     }, 2000);
   }
-  const [selected, setSelected] = useState([]);
 
-  const [odobreno, setOdobreno] = useState(false);
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
   myHeaders.append('Authorization', 'Bearer ' + props.user.token);
+
   useEffect(() => {
     fetch(
       'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/PutniNalog/getSingle.php?idPutnogNaloga=' +
@@ -86,12 +89,14 @@ export default function PNEdit(props) {
         handleZaposlenikChange(data);
       });
   }, []);
+
   const { handleChange, values, handleSubmit, errors } = useForm(
     validate,
     idPutnogNaloga,
     Success,
     selected
   );
+
   const handleExistingValues = (data) => {
     values.polaziste = data.polaziste;
     values.odrediste = data.odrediste;
@@ -102,7 +107,6 @@ export default function PNEdit(props) {
     setOdobreno(data.odobreno === '1' ? true : false);
     setUpdate(update + 1);
   };
-  const [items, setItems] = useState([]);
 
   const handleZaposlenikChange = (data) => {
     values.zaposlenici = data;

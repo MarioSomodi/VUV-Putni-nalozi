@@ -15,6 +15,10 @@ import { createBrowserHistory } from 'history';
 import PNStatistics from './components/putniNalozi/Statistics/PNStatistics';
 import Zaposlenici from './pages/Zaposlenici/Zaposlenici';
 import ZSingle from './components/zaposlenici/Single/ZSingle';
+import OdjeliIUloge from './pages/OdjeliIUloge/OdjeliIUloge';
+import EditOdjel from './components/odjeliIUloge/Edit/EditOdjel';
+import EditUloga from './components/odjeliIUloge/Edit/EditUloga';
+import OUCreate from './components/odjeliIUloge/Create/OUCreate';
 
 const history = createBrowserHistory();
 
@@ -81,6 +85,18 @@ function App() {
               </Route>
               <Route path='/Zaposlenik/Statistika' exact>
                 <ZStatistics user={user} />
+              </Route>
+              <Route path='/Odjeli-i-Uloge' exact>
+                <OdjeliIUloge user={user} />
+              </Route>
+              <Route path='/Odjel/Azuriraj/id/:idOdjela' exact>
+                <EditOdjel user={user} />
+              </Route>
+              <Route path='/Uloga/Azuriraj/id/:idUloge' exact>
+                <EditUloga user={user} />
+              </Route>
+              <Route path='/Odjel-i-Uloga/Kreiraj' exact>
+                <OUCreate user={user} />
               </Route>
             </Switch>
           </div>

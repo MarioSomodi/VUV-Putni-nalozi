@@ -26,14 +26,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ZSingle(props) {
+  let { idZaposlenika } = useParams();
   const [zaposlenik, setZaposlenik] = useState(null);
   const [date, setDate] = useState(null);
   const componentRef = useRef();
   const classes = useStyles();
-  let { idZaposlenika } = useParams();
+
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
   myHeaders.append('Authorization', 'Bearer ' + props.user.token);
+
   useEffect(() => {
     fetch(
       'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Zaposlenik/getSingle.php?idZaposlenika=' +
@@ -50,6 +52,7 @@ export default function ZSingle(props) {
         setDate(new Date(data.prvaPrijava));
       });
   }, []);
+
   return (
     <div className='single'>
       <MuiThemeProvider theme={theme}>
