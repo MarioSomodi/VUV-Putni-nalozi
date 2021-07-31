@@ -22,7 +22,6 @@
             }
             if($zaposlenikExist)
             {
-                echo "usao : ".$putniNalog['idPutnogNaloga'];
                 $startDate = new DateTime($putniNalog['datumOdlaska']);
                 $endDate = new DateTime($putniNalog['datumOdlaska']);
                 $endDate->add(new DateInterval('P'.$putniNalog['brojDana'].'D'));
