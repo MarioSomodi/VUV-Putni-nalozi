@@ -1,4 +1,4 @@
-import Topbar from './components/topbar/Topbar';
+import Topbar from './components/Topbar/Topbar';
 import { React, useState } from 'react';
 import Sidebar from './components/sidebar/Sidebar';
 import PNSingle from './components/putniNalozi/Single/PNSingle';
@@ -8,7 +8,7 @@ import ZEdit from './components/zaposlenici/Edit/ZEdit';
 import ZCreate from './components/zaposlenici/Create/ZCreate';
 import ZStatistics from './components/zaposlenici/Statistics/ZStatistics';
 import Authentication from './components/authentication/Authentication';
-import './app.css';
+import './App.css';
 import PutniNalozi from './pages/PutniNalozi/PutniNalozi';
 import { Router, Switch, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
