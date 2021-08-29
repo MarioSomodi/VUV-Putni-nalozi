@@ -4,6 +4,7 @@ Install all dependencies by going to putniNaloziUI and running the below command
 ```
 npm i
 ```
+You have to setup a MYSQL database with the SQL for that provided in the root directory, also change connection string in putniNaloziAPI/includes/config.php.
 After that you are ready to go.
 ## Live version
 (WIP)
