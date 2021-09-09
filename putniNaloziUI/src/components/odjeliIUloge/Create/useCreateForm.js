@@ -1,10 +1,14 @@
 import { useState } from 'react';
 
-const useForm = (validate, Success, type) => {
+const useForm = (validate, Success, type, token) => {
   const [values, setValues] = useState({
     naziv: '',
   });
   const [errors, setErrors] = useState({});
+
+  const myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/json');
+  myHeaders.append('authorization', 'Bearer ' + token);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,14 +29,14 @@ const useForm = (validate, Success, type) => {
         type === 1
           ? {
               method: 'POST',
-              headers: { 'Content-Type': 'json' },
+              headers: myHeaders,
               body: JSON.stringify({
                 odjel: values.naziv,
               }),
             }
           : {
               method: 'POST',
-              headers: { 'Content-Type': 'json' },
+              headers: myHeaders,
               body: JSON.stringify({
                 uloga: values.naziv,
               }),

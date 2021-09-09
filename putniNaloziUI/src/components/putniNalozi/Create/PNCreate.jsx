@@ -30,12 +30,13 @@ export default function PNCreate(props) {
   const [odobreno, setOdobreno] = useState(false);
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
-  myHeaders.append('Authorization', 'Bearer ' + props.user.token);
+  myHeaders.append('authorization', 'Bearer ' + props.user.token);
 
   const { handleChange, values, handleSubmit, errors } = useForm(
     validate,
     Success,
-    selected
+    selected,
+    props.user.token
   );
 
   useEffect(() => {

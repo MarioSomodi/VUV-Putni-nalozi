@@ -39,7 +39,8 @@ export default function EditUloga(props) {
   const { handleChange, values, handleSubmit, errors } = useForm(
     validate,
     Success,
-    data
+    data,
+    props.user.token
   );
   return (
     <div className='create'>

@@ -23,8 +23,7 @@ export default function PNSingle(props) {
 
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
-  myHeaders.append('Authorization', 'Bearer ' + props.user.token);
-
+  myHeaders.append('authorization', 'Bearer ' + props.user.token);
   useEffect(() => {
     fetch(
       'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/PutniNalog/getSingle.php?idPutnogNaloga=' +

@@ -24,78 +24,113 @@
         }
 
         public function read(){
-            $query = '
-                SELECT z.idZaposlenika, z.korisnickoIme, z.ime, z.prezime, z.slobodan, z.rola, o.odjel, u.uloga FROM zaposlenici z
-                JOIN odjeli o 
-                ON z.odjel = o.id
-                JOIN uloge u
-                ON z.uloga = u.id
-            ';
-            $statment = $this->connection->prepare($query);
-            $statment->execute();
-            if($statment->execute()){
-                return $statment;
+            $headers = apache_request_headers();
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
+                try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
+                    $query = '
+                        SELECT z.idZaposlenika, z.korisnickoIme, z.ime, z.prezime, z.slobodan, z.rola, o.odjel, u.uloga FROM zaposlenici z
+                        JOIN odjeli o 
+                        ON z.odjel = o.id
+                        JOIN uloge u
+                        ON z.uloga = u.id
+                    ';
+                    $statment = $this->connection->prepare($query);
+                    $statment->execute();
+                    if($statment->execute()){
+                        return $statment;
+                    }else{
+                        throw new Exception("Error \n".$statment->error);
+                    }
+                }catch(Exception $e){
+                    throw new Exception("Autorizacijski token je neispravan ili niste autorizirani. Kontaktirajte administratora.");
+                }
             }else{
-                throw new Exception("Error \n".$statment->error);
+                throw new Exception("Autorizacijski token nije postavljen. Kontaktirajte administratora.");
             }
+            
         }
 
         public function readSingle(){
-            $query = '
-                SELECT z.prvaPrijavaUSustav, z.idZaposlenika, z.korisnickoIme, z.ime, z.prezime, z.slobodan, z.rola, o.odjel, o.id AS idOdjela, u.uloga, u.id AS idUloge FROM zaposlenici z
-                JOIN odjeli o 
-                ON z.odjel = o.id
-                JOIN uloge u
-                ON z.uloga = u.id
-                WHERE idZaposlenika = :idZaposlenika 
-                LIMIT 1;
-            ';
-            $statment = $this->connection->prepare($query);
-            $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
-            if(!$statment->execute()){
-                throw new Exception("Error \n".$statment->error);
+            $headers = apache_request_headers();
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
+                try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
+                    $query = '
+                        SELECT z.prvaPrijavaUSustav, z.idZaposlenika, z.korisnickoIme, z.ime, z.prezime, z.slobodan, z.rola, o.odjel, o.id AS idOdjela, u.uloga, u.id AS idUloge FROM zaposlenici z
+                        JOIN odjeli o 
+                        ON z.odjel = o.id
+                        JOIN uloge u
+                        ON z.uloga = u.id
+                        WHERE idZaposlenika = :idZaposlenika 
+                        LIMIT 1;
+                    ';
+                    $statment = $this->connection->prepare($query);
+                    $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
+                    if(!$statment->execute()){
+                        throw new Exception("Error \n".$statment->error);
+                    }
+                    $row = $statment->fetch(PDO::FETCH_ASSOC);
+                    $this->ime = $row['ime'];
+                    $this->prezime = $row['prezime'];
+                    $this->odjel = $row['odjel'];
+                    $this->uloga = $row['uloga'];
+                    $this->slobodan = $row['slobodan'];
+                    $this->role = $row['rola'];
+                    $this->korisnickoIme = $row['korisnickoIme'];
+                    $this->idOdjela = $row['idOdjela'];
+                    $this->idUloge = $row['idUloge'];
+                    $this->prvaPrijava = $row['prvaPrijavaUSustav'];
+                }catch(Exception $e){
+                    throw new Exception("Autorizacijski token je neispravan ili niste autorizirani. Kontaktirajte administratora.");
+                }
+            }else{
+                throw new Exception("Autorizacijski token nije postavljen. Kontaktirajte administratora.");
             }
-            $row = $statment->fetch(PDO::FETCH_ASSOC);
-            $this->ime = $row['ime'];
-            $this->prezime = $row['prezime'];
-            $this->odjel = $row['odjel'];
-            $this->uloga = $row['uloga'];
-            $this->slobodan = $row['slobodan'];
-            $this->role = $row['rola'];
-            $this->korisnickoIme = $row['korisnickoIme'];
-            $this->idOdjela = $row['idOdjela'];
-            $this->idUloge = $row['idUloge'];
-            $this->prvaPrijava = $row['prvaPrijavaUSustav'];
         }
 
         public function create(){
-            $query = 'INSERT INTO '.$this->table.' SET ime = :ime, korisnickoIme = :korisnickoIme, prezime = :prezime, odjel = :odjel, uloga = :uloga, slobodan = 1, rola = :rola, lozinka = :lozinka;';
-            $statment = $this->connection->prepare($query);
-            
-            //Sets all properties.
-            $this->ime = htmlspecialchars(strip_tags($this->ime));
-            $this->prezime = htmlspecialchars(strip_tags($this->prezime));
-            $this->odjel = htmlspecialchars(strip_tags($this->odjel));
-            $this->uloga = htmlspecialchars(strip_tags($this->uloga));
-            $this->lozinka = htmlspecialchars(strip_tags($this->lozinka));
-            $this->korisnickoIme = htmlspecialchars(strip_tags($this->korisnickoIme));
-            $this->role = htmlspecialchars(strip_tags($this->role));
-            
-            //Bind all the parameters of the query.
-            $statment->bindParam(':ime', $this->ime);
-            $statment->bindParam(':lozinka', $this->lozinka);
-            $statment->bindParam(':korisnickoIme', $this->korisnickoIme);
-            $statment->bindParam(':prezime', $this->prezime);
-            $statment->bindParam(':odjel', $this->odjel);
-            $statment->bindParam(':uloga', $this->uloga); 
-            $statment->bindParam(':rola', $this->role);
-            
-            //Try to execute the query if it fails return the error/false on success return true.
-            if($statment->execute()){
-                return true;
+            $headers = apache_request_headers();
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
+                try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
+                    $query = 'INSERT INTO '.$this->table.' SET ime = :ime, korisnickoIme = :korisnickoIme, prezime = :prezime, odjel = :odjel, uloga = :uloga, slobodan = 1, rola = :rola, lozinka = :lozinka;';
+                    $statment = $this->connection->prepare($query);
+                    
+                    //Sets all properties.
+                    $this->ime = htmlspecialchars(strip_tags($this->ime));
+                    $this->prezime = htmlspecialchars(strip_tags($this->prezime));
+                    $this->odjel = htmlspecialchars(strip_tags($this->odjel));
+                    $this->uloga = htmlspecialchars(strip_tags($this->uloga));
+                    $this->lozinka = htmlspecialchars(strip_tags($this->lozinka));
+                    $this->korisnickoIme = htmlspecialchars(strip_tags($this->korisnickoIme));
+                    $this->role = htmlspecialchars(strip_tags($this->role));
+                    
+                    //Bind all the parameters of the query.
+                    $statment->bindParam(':ime', $this->ime);
+                    $statment->bindParam(':lozinka', $this->lozinka);
+                    $statment->bindParam(':korisnickoIme', $this->korisnickoIme);
+                    $statment->bindParam(':prezime', $this->prezime);
+                    $statment->bindParam(':odjel', $this->odjel);
+                    $statment->bindParam(':uloga', $this->uloga); 
+                    $statment->bindParam(':rola', $this->role);
+                    
+                    //Try to execute the query if it fails return the error/false on success return true.
+                    if($statment->execute()){
+                        return true;
+                    }else{
+                        throw new Exception("Error \n".$statment->error);
+                    }
+                }catch(Exception $e){
+                    throw new Exception("Autorizacijski token je neispravan ili niste autorizirani. Kontaktirajte administratora.");
+                }
             }else{
-                throw new Exception("Error \n".$statment->error);
+                throw new Exception("Autorizacijski token nije postavljen. Kontaktirajte administratora.");
             }
+            
         }
         public function update(){
             $query = 'UPDATE '.$this->table.' SET ime = :ime, prezime = :prezime, rola = :rola, odjel = :odjel, uloga = :uloga, korisnickoIme = :korisnickoIme WHERE idZaposlenika = :idZaposlenika;';
@@ -128,23 +163,35 @@
         }
 
         public function delete(){
-            $query = '
-                DELETE FROM '.$this->table.' WHERE idZaposlenika = :idZaposlenika;
-                DELETE FROM '.$this->relationTable.' WHERE idZaposlenika = :idZaposlenika;
-                DELETE FROM putninalozi 
-                WHERE (
-                    SELECT COUNT(putninalozi.idPutnogNaloga) FROM zaposlenikputninalog 
-                    WHERE zaposlenikputninalog.idPutnogNaloga = putninalozi.idPutnogNaloga
-                ) = 0;
-            ';
-            $statment = $this->connection->prepare($query);
-            $this->idZaposlenika = htmlspecialchars(strip_tags($this->idZaposlenika));
-            $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
-            if($statment->execute()){
-                return true;
+            $headers = apache_request_headers();
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
+                try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
+                    $query = '
+                        DELETE FROM '.$this->table.' WHERE idZaposlenika = :idZaposlenika;
+                        DELETE FROM '.$this->relationTable.' WHERE idZaposlenika = :idZaposlenika;
+                        DELETE FROM putninalozi 
+                        WHERE (
+                            SELECT COUNT(putninalozi.idPutnogNaloga) FROM zaposlenikputninalog 
+                            WHERE zaposlenikputninalog.idPutnogNaloga = putninalozi.idPutnogNaloga
+                        ) = 0;
+                    ';
+                    $statment = $this->connection->prepare($query);
+                    $this->idZaposlenika = htmlspecialchars(strip_tags($this->idZaposlenika));
+                    $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
+                    if($statment->execute()){
+                        return true;
+                    }else{
+                        throw new Exception("Error \n".$statment->error);
+                    }
+                }catch(Exception $e){
+                    throw new Exception("Autorizacijski token je neispravan ili niste autorizirani. Kontaktirajte administratora.");
+                }
             }else{
-                throw new Exception("Error \n".$statment->error);
+                throw new Exception("Autorizacijski token nije postavljen. Kontaktirajte administratora.");
             }
+
         }
 
         public function addToPutniNalog($idPutnogNaloga){
@@ -180,23 +227,35 @@
             }
         }
         public function updateAvailable(){
-            $query = 'UPDATE '.$this->table.' SET slobodan = :slobodan WHERE idZaposlenika = :idZaposlenika;';
-            $statment = $this->connection->prepare($query);
-            
-            //Sets all properties.
-            $this->idZaposlenika = htmlspecialchars(strip_tags($this->idZaposlenika));
-            $this->slobodan = htmlspecialchars(strip_tags($this->slobodan));
-            
-            //Bind all the parameters of the query.
-            $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
-            $statment->bindParam(':slobodan', $this->slobodan);
-            
-            //Try to execute the query if it fails return the error/false on success return true.
-            if($statment->execute()){
-                return true;
+            $headers = apache_request_headers();
+            if(isset($headers['authorization'])){
+                $token = str_replace('Bearer ', '', $headers['authorization']);
+                try{
+                    $token = JWT::decode($token, $this->key, array('HS512'));
+                    $query = 'UPDATE '.$this->table.' SET slobodan = :slobodan WHERE idZaposlenika = :idZaposlenika;';
+                    $statment = $this->connection->prepare($query);
+                    
+                    //Sets all properties.
+                    $this->idZaposlenika = htmlspecialchars(strip_tags($this->idZaposlenika));
+                    $this->slobodan = htmlspecialchars(strip_tags($this->slobodan));
+                    
+                    //Bind all the parameters of the query.
+                    $statment->bindParam(':idZaposlenika', $this->idZaposlenika);
+                    $statment->bindParam(':slobodan', $this->slobodan);
+                    
+                    //Try to execute the query if it fails return the error/false on success return true.
+                    if($statment->execute()){
+                        return true;
+                    }else{
+                        throw new Exception("Error \n".$statment->error);
+                    }
+                }catch(Exception $e){
+                    throw new Exception("Autorizacijski token je neispravan ili niste autorizirani. Kontaktirajte administratora.");
+                }
             }else{
-                throw new Exception("Error \n".$statment->error);
+                throw new Exception("Autorizacijski token nije postavljen. Kontaktirajte administratora.");
             }
+            
         }
         public function getIds(){
             $query = 'SELECT idZaposlenika FROM '.$this->table.';';

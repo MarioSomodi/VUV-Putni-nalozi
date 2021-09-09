@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useForm = (validate, id, Success, user) => {
+const useForm = (validate, id, Success, user, myHeaders) => {
   const [values, setValues] = useState({
     ime: '',
     prezime: '',
@@ -30,7 +30,7 @@ const useForm = (validate, id, Success, user) => {
     if (Object.keys(error).length === 0) {
       const requestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'json' },
+        headers: myHeaders,
         body: JSON.stringify({
           idZaposlenika: id,
           ime: values.ime,

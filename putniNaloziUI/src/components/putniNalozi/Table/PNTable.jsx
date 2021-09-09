@@ -168,7 +168,7 @@ export default function PNTable(props) {
 
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
-  myHeaders.append('Authorization', 'Bearer ' + props.user.token);
+  myHeaders.append('authorization', 'Bearer ' + props.user.token);
   useEffect(() => {
     updateRows();
     fetch(

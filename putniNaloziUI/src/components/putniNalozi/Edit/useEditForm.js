@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useForm = (validate, id, Success, selected) => {
+const useForm = (validate, id, Success, selected, token) => {
   const [values, setValues] = useState({
     polaziste: '',
     odrediste: '',
@@ -10,6 +10,10 @@ const useForm = (validate, id, Success, selected) => {
     odobreno: '',
   });
   const [errors, setErrors] = useState({});
+
+  const myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/json');
+  myHeaders.append('authorization', 'Bearer ' + token);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,7 +28,7 @@ const useForm = (validate, id, Success, selected) => {
     if (Object.keys(error).length === 0 && selected.length > 0) {
       const requestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'html' },
+        headers: myHeaders,
         body: JSON.stringify({
           idPutnogNaloga: id,
           polaziste: values.polaziste,

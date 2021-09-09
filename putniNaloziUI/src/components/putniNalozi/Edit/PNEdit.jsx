@@ -42,7 +42,7 @@ export default function PNEdit(props) {
 
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
-  myHeaders.append('Authorization', 'Bearer ' + props.user.token);
+  myHeaders.append('authorization', 'Bearer ' + props.user.token);
 
   useEffect(() => {
     fetch(
@@ -94,7 +94,8 @@ export default function PNEdit(props) {
     validate,
     idPutnogNaloga,
     Success,
-    selected
+    selected,
+    props.user.token
   );
 
   const handleExistingValues = (data) => {

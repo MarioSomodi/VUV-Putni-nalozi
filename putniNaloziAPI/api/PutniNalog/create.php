@@ -76,7 +76,7 @@
     }catch(Exception $e)
     {
         echo json_encode(array(
-            "message" => "Doslo je do pogreske kod kreiranja putnog naloga.",
+            "message" => "Doslo je do pogreske kod kreiranja putnog naloga",
             "error" => $e->getMessage()
         ));
     }

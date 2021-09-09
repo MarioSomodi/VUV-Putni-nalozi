@@ -34,10 +34,15 @@ export default function EditUloga(props) {
     }, 2000);
   }
 
+  const myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/json');
+  myHeaders.append('authorization', 'Bearer ' + props.user.token);
+
   const { handleChange, values, handleSubmit, errors } = useForm(
     validate,
     idUloge,
-    Success
+    Success,
+    myHeaders
   );
 
   const handleExistingValues = (data) => {
@@ -45,9 +50,6 @@ export default function EditUloga(props) {
     setUpdate(update + 1);
   };
 
-  const myHeaders = new Headers();
-  myHeaders.append('Content-Type', 'application/json');
-  myHeaders.append('Authorization', 'Bearer ' + props.user.token);
   useEffect(() => {
     fetch(
       'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Uloga/getSingle.php?id=' +
