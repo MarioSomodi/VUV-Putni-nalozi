@@ -8,6 +8,7 @@ You have to setup a MYSQL database with the SQL for that provided in the root di
 After that you are ready to go.
 ## Live version
 (WIP)
+[VUV Putni nalozi](https://vuvputninalozi.netlify.app)
 ## Description of the project.
 This is a React web app made for a college course I had. It's a portal where employees can request travel orders for their business trips on the other side there is the administrative side of the app that only employers can get into, it allows employers to approve travel orders, to register new employees into the system and to edit the company hierarchy that is add new roles and departments.
 ## Technologies used.
