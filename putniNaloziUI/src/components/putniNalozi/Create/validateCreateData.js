@@ -1,5 +1,5 @@
 export default function validateInfo(values) {
-  let errors = {};
+  const errors = {};
   if (!values.polaziste.trim()) {
     errors.polaziste = 'Polaziste je obavezno.';
   }
@@ -12,11 +12,11 @@ export default function validateInfo(values) {
   if (!values.datumOdlaska.trim()) {
     errors.datumOdlaska = 'Datum odlaska je obavezan.';
   } else {
-    var inputDate = new Date(values.datumOdlaska);
-    var currentDate = new Date();
+    const inputDate = new Date(values.datumOdlaska);
+    const currentDate = new Date();
     if (inputDate.setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) {
       errors.datumOdlaska =
-        'Datum odlaska ne moze biti manji od danasnjeg datuma.';
+        'Datum odlaska ne može biti manji od današnjeg datuma.';
     }
   }
   if (!values.brojDana.trim()) {

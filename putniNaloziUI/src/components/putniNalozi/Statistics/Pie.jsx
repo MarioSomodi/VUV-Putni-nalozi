@@ -2,13 +2,13 @@ import { React, useState, useCallback } from 'react';
 import { PieChart, Pie, Sector } from 'recharts';
 
 const getData = (data) => {
-  var numOdobreno = 0;
-  var numNeodobreno = 0;
+  let numOdobreno = 0;
+  let numNeodobreno = 0;
   data.forEach((nalog) => {
     if (nalog.odobreno === '1') {
-      numOdobreno++;
+      numOdobreno += 1;
     } else {
-      numNeodobreno++;
+      numNeodobreno += 1;
     }
   });
   return [
@@ -94,7 +94,7 @@ const renderActiveShape = (props) => {
   );
 };
 
-export default function PNPie(props) {
+export default function PNPie({ putniNalozi }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const onPieEnter = useCallback(
     (_, index) => {
@@ -103,21 +103,19 @@ export default function PNPie(props) {
     [setActiveIndex]
   );
   return (
-    <>
-      <PieChart width={650} height={400}>
-        <Pie
-          activeIndex={activeIndex}
-          activeShape={renderActiveShape}
-          data={getData(props.putniNalozi)}
-          cx='50%'
-          cy='50%'
-          innerRadius={60}
-          outerRadius={80}
-          fill='#8884d8'
-          dataKey='value'
-          onMouseEnter={onPieEnter}
-        />
-      </PieChart>
-    </>
+    <PieChart width={650} height={400}>
+      <Pie
+        activeIndex={activeIndex}
+        activeShape={renderActiveShape}
+        data={getData(putniNalozi)}
+        cx='50%'
+        cy='50%'
+        innerRadius={60}
+        outerRadius={80}
+        fill='#8884d8'
+        dataKey='value'
+        onMouseEnter={onPieEnter}
+      />
+    </PieChart>
   );
 }

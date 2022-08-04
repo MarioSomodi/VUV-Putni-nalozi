@@ -1,15 +1,9 @@
 import { React, useEffect, useState } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
-import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import SearchBar from 'material-ui-search-bar';
-import {
-  createMuiTheme,
-  MuiThemeProvider,
-  makeStyles,
-  useTheme,
-} from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
   Delete,
   Visibility,
@@ -33,17 +27,7 @@ import {
 } from '@material-ui/core';
 import './table.css';
 import { Link } from 'react-router-dom';
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#5724c7',
-    },
-    secondary: {
-      main: '#e60505',
-    },
-  },
-});
+import { getApiInstance } from '../../../api/apiInstance';
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -115,24 +99,18 @@ function TablePaginationActions(props) {
   );
 }
 
-TablePaginationActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onChangePage: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-};
-
-export default function PNTable(props) {
+export default function PNTable({ user }) {
   const [rows, setRows] = useState();
   const [oRows, setORows] = useState();
+  const apiInstance = getApiInstance(user.token);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searched, setSearched] = useState('');
 
   const requestSearch = (searchedVal) => {
     const filteredRows = oRows.filter((row) => {
-      var exist = false;
-      for (var i = 0; i < row.zaposlenici.length; i++) {
+      let exist = false;
+      for (let i = 0; i < row.zaposlenici.length; i += 1) {
         exist = `${row.zaposlenici[i].ime}${row.zaposlenici[i].prezime}`
           .toLowerCase()
           .includes(searchedVal.toLowerCase());
@@ -142,13 +120,12 @@ export default function PNTable(props) {
       }
       if (exist) {
         return exist;
-      } else {
-        return `${row.polaziste}${row.odrediste}${row.svrha}${
-          row.datumOdlaska
-        }${row.brojDana}${row.odobreno === '1' ? 'Odobreno' : 'Nije odobren'}`
-          .toLowerCase()
-          .includes(searchedVal.toLowerCase());
       }
+      return `${row.polaziste}${row.odrediste}${row.svrha}${row.datumOdlaska}${
+        row.brojDana
+      }${row.odobreno === '1' ? 'Odobreno' : 'Nije odobren'}`
+        .toLowerCase()
+        .includes(searchedVal.toLowerCase());
     });
     setRows(filteredRows);
   };
@@ -166,27 +143,28 @@ export default function PNTable(props) {
     setPage(0);
   };
 
-  const myHeaders = new Headers();
-  myHeaders.append('Content-Type', 'application/json');
-  myHeaders.append('authorization', 'Bearer ' + props.user.token);
+  function updateRows() {
+    apiInstance.get('PutniNalog/getAll.php').then(({ data }) => {
+      setRows(data);
+      setORows(data);
+    });
+  }
+
+  function handleDelete(id) {
+    apiInstance
+      .delete(`PutniNalog/delete.php?id=${id}`)
+      .then(() => updateRows());
+  }
+
   useEffect(() => {
     updateRows();
-    fetch(
-      'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Zaposlenik/setAvailability.php',
-      {
-        method: 'GET',
-        mode: 'cors',
-        headers: myHeaders,
-      }
-    )
-      .then((response) => response.text())
-      .then(() => {});
+    apiInstance.get('Zaposlenik/setAvailability.php');
   }, []);
 
   function handleAlert(id) {
     confirmAlert({
       title: 'Obrisati?',
-      message: 'Sigurno zelite obrisati ovaj putni nalog?',
+      message: 'Sigurno želite obrisati ovaj putni nalog?',
       buttons: [
         {
           label: 'Da',
@@ -200,152 +178,112 @@ export default function PNTable(props) {
       closeOnClickOutside: true,
     });
   }
-  function handleDelete(id) {
-    fetch(
-      'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/PutniNalog/delete.php',
-      {
-        method: 'DELETE',
-        mode: 'cors',
-        headers: myHeaders,
-        body: JSON.stringify({
-          idPutnogNaloga: id,
-        }),
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => updateRows());
-  }
-
-  function updateRows() {
-    fetch(
-      'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/PutniNalog/getAll.php',
-      {
-        method: 'GET',
-        mode: 'cors',
-        headers: myHeaders,
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setRows(data);
-        setORows(data);
-      });
-  }
 
   return (
-    <MuiThemeProvider theme={theme}>
-      <Grid container>
-        <Grid item xs>
-          <Paper elevation={6} className='tableContainer'>
-            <TableContainer>
-              {rows && (
-                <>
-                  <SearchBar
-                    className='searchBar'
-                    placeholder='Pretraži'
-                    value={searched}
-                    onChange={(searchedVal) => requestSearch(searchedVal)}
-                    onCancelSearch={() => cancelSearch()}
-                  />
-                  <Table aria-label='Putni nalozi tablica'>
-                    <TableHead>
+    <Grid container>
+      <Grid item xs>
+        <Paper elevation={6} className='tableContainer'>
+          <TableContainer>
+            {rows && (
+              <>
+                <SearchBar
+                  className='searchBar'
+                  placeholder='Pretraži'
+                  value={searched}
+                  onChange={(searchedVal) => requestSearch(searchedVal)}
+                  onCancelSearch={() => cancelSearch()}
+                />
+                <Table aria-label='Putni nalozi tablica'>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>R.br.</TableCell>
+                      <TableCell align='left'>Polazište</TableCell>
+                      <TableCell align='left'>Odredište</TableCell>
+                      <TableCell align='left'>Svrha</TableCell>
+                      <TableCell align='left'>Datum odlaska</TableCell>
+                      <TableCell align='left'>Broj dana</TableCell>
+                      <TableCell align='left'>Odobreno</TableCell>
+                      <TableCell align='center'>Akcije</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {(rowsPerPage > 0
+                      ? rows.slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                      : rows
+                    ).map((row, index) => (
                       <TableRow>
-                        <TableCell>R.br.</TableCell>
-                        <TableCell align='left'>Polazište</TableCell>
-                        <TableCell align='left'>Odredište</TableCell>
-                        <TableCell align='left'>Svrha</TableCell>
-                        <TableCell align='left'>Datum odlaska</TableCell>
-                        <TableCell align='left'>Broj dana</TableCell>
-                        <TableCell align='left'>Odobreno</TableCell>
-                        <TableCell align='center'>Akcije</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {(rowsPerPage > 0
-                        ? rows.slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage
-                          )
-                        : rows
-                      ).map((row, index) => (
-                        <TableRow>
-                          <TableCell component='th' scope='row'>
-                            {index + 1}
-                          </TableCell>
-                          <TableCell align='left'>{row.polaziste}</TableCell>
-                          <TableCell align='left'>{row.odrediste}</TableCell>
-                          <TableCell align='left'>{row.svrha}</TableCell>
-                          <TableCell align='left'>{row.datumOdlaska}</TableCell>
-                          <TableCell align='left'>{row.brojDana}</TableCell>
-                          <TableCell align='left'>
-                            {row.odobreno === '1'
-                              ? 'Odobreno'
-                              : 'Nije odobreno'}
-                          </TableCell>
-                          <TableCell align='center'>
-                            <Link to={'/PutniNalog/id/' + row.idPutnogNaloga}>
-                              <IconButton color='primary'>
-                                <Visibility />
-                              </IconButton>
-                            </Link>
-                            {props.user.role === '1' ? (
-                              <>
-                                <Link
-                                  to={
-                                    '/PutniNalog/Azuriraj/id/' +
-                                    row.idPutnogNaloga
-                                  }
-                                >
-                                  <IconButton color='primary'>
-                                    <Edit />
-                                  </IconButton>
-                                </Link>
-                                <IconButton
-                                  onClick={() =>
-                                    handleAlert(row.idPutnogNaloga)
-                                  }
-                                  color='primary'
-                                >
-                                  <Delete />
+                        <TableCell component='th' scope='row'>
+                          {index + 1}
+                        </TableCell>
+                        <TableCell align='left'>{row.polaziste}</TableCell>
+                        <TableCell align='left'>{row.odrediste}</TableCell>
+                        <TableCell align='left'>{row.svrha}</TableCell>
+                        <TableCell align='left'>{row.datumOdlaska}</TableCell>
+                        <TableCell align='left'>{row.brojDana}</TableCell>
+                        <TableCell align='left'>
+                          {row.odobreno === '1' ? 'Odobreno' : 'Nije odobreno'}
+                        </TableCell>
+                        <TableCell align='center'>
+                          <Link to={`/PutniNalog/id/${row.idPutnogNaloga}`}>
+                            <IconButton color='primary'>
+                              <Visibility />
+                            </IconButton>
+                          </Link>
+                          {user.role === '1' ? (
+                            <>
+                              <Link
+                                to={`/PutniNalog/Azuriraj/id/${row.idPutnogNaloga}`}
+                              >
+                                <IconButton color='primary'>
+                                  <Edit />
                                 </IconButton>
-                              </>
-                            ) : (
-                              ''
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                    <TableFooter>
-                      <TableRow>
-                        <TablePagination
-                          rowsPerPageOptions={[
-                            5,
-                            10,
-                            15,
-                            { label: 'Svi', value: -1 },
-                          ]}
-                          count={rows.length}
-                          rowsPerPage={rowsPerPage}
-                          page={page}
-                          SelectProps={{
-                            inputProps: { 'aria-label': 'rows per page' },
-                            native: true,
-                          }}
-                          labelRowsPerPage='Broj redova po stranici: '
-                          onChangePage={handleChangePage}
-                          onChangeRowsPerPage={handleChangeRowsPerPage}
-                          ActionsComponent={TablePaginationActions}
-                        />
+                              </Link>
+                              <IconButton
+                                onClick={() => handleAlert(row.idPutnogNaloga)}
+                                color='primary'
+                              >
+                                <Delete />
+                              </IconButton>
+                            </>
+                          ) : (
+                            ''
+                          )}
+                        </TableCell>
                       </TableRow>
-                    </TableFooter>
-                  </Table>
-                </>
-              )}
-            </TableContainer>
-          </Paper>
-        </Grid>
+                    ))}
+                  </TableBody>
+                  <TableFooter>
+                    <TableRow>
+                      <TablePagination
+                        rowsPerPageOptions={[
+                          5,
+                          10,
+                          15,
+                          { label: 'Svi', value: -1 },
+                        ]}
+                        count={rows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        SelectProps={{
+                          inputProps: { 'aria-label': 'rows per page' },
+                          native: true,
+                        }}
+                        labelRowsPerPage='Broj redova po stranici: '
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                        ActionsComponent={TablePaginationActions}
+                      />
+                    </TableRow>
+                  </TableFooter>
+                </Table>
+              </>
+            )}
+          </TableContainer>
+        </Paper>
       </Grid>
-    </MuiThemeProvider>
+    </Grid>
   );
 }

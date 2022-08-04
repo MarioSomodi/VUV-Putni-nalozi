@@ -1,5 +1,5 @@
 export default function validateInfo(values) {
-  let errors = {};
+  const errors = {};
   if (!values.ime.trim()) {
     errors.ime = 'Ime je obavezno.';
   }
@@ -7,7 +7,7 @@ export default function validateInfo(values) {
     errors.prezime = 'Prezime je obavezno.';
   }
   if (!values.korisnickoIme.trim()) {
-    errors.korisnickoIme = 'Korisnicko ime je obavezno.';
+    errors.korisnickoIme = 'Korisničko ime je obavezno.';
   }
   if (!values.odjel.trim()) {
     errors.odjel = 'Morate odabrati odjel.';
@@ -20,7 +20,7 @@ export default function validateInfo(values) {
   } else if (!values.lozinka.length > 6) {
     errors.lozinka = 'Lozinka mora imati vise od 6 karaktera.';
   } else if (values.lozinka !== values.lozinka2) {
-    errors.lozinka2 = 'Lozinke se nepodudaraju.';
+    errors.lozinka2 = 'Lozinke se ne podudaraju.';
   }
   return errors;
 }

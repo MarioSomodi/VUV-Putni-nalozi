@@ -1,31 +1,22 @@
 import { React, useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { FormHelperText } from '@material-ui/core';
 import useForm from './useSignUpForm';
 import validate from './validateSignUpData';
-import { FormHelperText } from '@material-ui/core';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import '../authentication.css';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#5724c7',
-    },
-  },
-});
-
-export default function SignUpForm(props) {
+export default function SignUpForm({ switchToSignIn }) {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const Success = (message) => {
     setSuccessMessage(message);
     setTimeout(() => {
-      props.switchToSignIn();
+      switchToSignIn();
     }, 2000);
   };
-  const Failed = (error) => {
-    setError(error);
+  const Failed = (failedError) => {
+    setError(failedError);
   };
   const { handleChange, values, handleSubmit, errors } = useForm(
     validate,
@@ -36,99 +27,103 @@ export default function SignUpForm(props) {
   return (
     <div className='boxContainer'>
       <div className='formContainer'>
-        <MuiThemeProvider theme={theme}>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              type='text'
-              name='korisnickoIme'
-              variant='outlined'
-              label='Korisnicko ime'
-              className='input'
-              value={values.korisnickoIme}
-              onChange={handleChange}
-            />
-            {errors.korisnickoIme && (
-              <FormHelperText className='helperText'>
-                {errors.korisnickoIme}
-              </FormHelperText>
-            )}
-            {error && (
-              <FormHelperText className='helperText'>{error}</FormHelperText>
-            )}
-            <TextField
-              type='text'
-              name='ime'
-              variant='outlined'
-              label='Ime'
-              className='input'
-              value={values.ime}
-              onChange={handleChange}
-            />
-            {errors.ime && (
-              <FormHelperText className='helperText'>
-                {errors.ime}
-              </FormHelperText>
-            )}
-            <TextField
-              type='text'
-              name='prezime'
-              variant='outlined'
-              label='Prezime'
-              className='input'
-              value={values.prezime}
-              onChange={handleChange}
-            />
-            {errors.prezime && (
-              <FormHelperText className='helperText'>
-                {errors.prezime}
-              </FormHelperText>
-            )}
-            <TextField
-              type='password'
-              name='lozinka'
-              variant='outlined'
-              label='Lozinka'
-              className='input'
-              value={values.lozinka}
-              onChange={handleChange}
-            />
-            {errors.lozinka && (
-              <FormHelperText className='helperText'>
-                {errors.lozinka}
-              </FormHelperText>
-            )}
-            <TextField
-              type='password'
-              name='lozinka2'
-              variant='outlined'
-              label='Potvrdite lozinku'
-              className='input'
-              value={values.lozinka2}
-              onChange={handleChange}
-            />
-            {errors.lozinka2 && (
-              <FormHelperText className='helperText'>
-                {errors.lozinka2}
-              </FormHelperText>
-            )}
-            <Button
-              type='submit'
-              variant='contained'
-              color='primary'
-              className='input'
-            >
-              Registriraj se
-            </Button>
-            {successMessage && (
-              <FormHelperText className='successText'>
-                {successMessage}
-              </FormHelperText>
-            )}
-          </form>
-        </MuiThemeProvider>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            type='text'
+            name='username'
+            variant='outlined'
+            label='Korisničko name'
+            className='input'
+            value={values.username}
+            onChange={handleChange}
+          />
+          {errors.username && (
+            <FormHelperText className='helperText'>
+              {errors.username}
+            </FormHelperText>
+          )}
+          {error && (
+            <FormHelperText className='helperText'>{error}</FormHelperText>
+          )}
+          <TextField
+            type='text'
+            name='name'
+            variant='outlined'
+            label='Ime'
+            className='input'
+            value={values.name}
+            onChange={handleChange}
+          />
+          {errors.name && (
+            <FormHelperText className='helperText'>
+              {errors.name}
+            </FormHelperText>
+          )}
+          <TextField
+            type='text'
+            name='lastname'
+            variant='outlined'
+            label='Prezime'
+            className='input'
+            value={values.lastname}
+            onChange={handleChange}
+          />
+          {errors.lastname && (
+            <FormHelperText className='helperText'>
+              {errors.lastname}
+            </FormHelperText>
+          )}
+          <TextField
+            type='password'
+            name='password'
+            variant='outlined'
+            label='Lozinka'
+            className='input'
+            value={values.password}
+            onChange={handleChange}
+          />
+          {errors.password && (
+            <FormHelperText className='helperText'>
+              {errors.password}
+            </FormHelperText>
+          )}
+          <TextField
+            type='password'
+            name='confirmPassword'
+            variant='outlined'
+            label='Potvrdite lozinku'
+            className='input'
+            value={values.confirmPassword}
+            onChange={handleChange}
+          />
+          {errors.confirmPassword && (
+            <FormHelperText className='helperText'>
+              {errors.confirmPassword}
+            </FormHelperText>
+          )}
+          <Button
+            type='submit'
+            variant='contained'
+            color='primary'
+            className='input'
+          >
+            Registriraj se
+          </Button>
+          {successMessage && (
+            <FormHelperText className='successText'>
+              {successMessage}
+            </FormHelperText>
+          )}
+        </form>
         <span className='mutedLink register'>
-          Vec imate korisnicki racun?{'  '}
-          <span onClick={props.switchToSignIn} className='boldLink'>
+          Vec imate korisnički račun?{'  '}
+          <span
+            role='link'
+            tabIndex={0}
+            onKeyPress={switchToSignIn}
+            onClick={switchToSignIn}
+            className='boldLink'
+          >
             Prijavite se
           </span>
         </span>

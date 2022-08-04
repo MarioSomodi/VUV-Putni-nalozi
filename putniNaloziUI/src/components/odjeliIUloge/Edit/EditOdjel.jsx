@@ -1,8 +1,5 @@
 import { React, useState, useEffect } from 'react';
-import './edit.css';
-import { useParams } from 'react-router-dom';
-import useForm from './useOdjelForm';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { Link, useParams } from 'react-router-dom';
 import {
   Paper,
   Grid,
@@ -10,19 +7,14 @@ import {
   FormHelperText,
   Button,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import useForm from './useOdjelForm';
+import './edit.css';
 import validate from './validateOdjelData';
+import { getApiInstance } from '../../../api/apiInstance';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#5724c7',
-    },
-  },
-});
-
-export default function EditOdjel(props) {
-  let { idOdjela } = useParams();
+export default function EditOdjel({ user }) {
+  const { idOdjela } = useParams();
+  const apiInstance = getApiInstance(user.token);
   const [successMessage, setSuccessMessage] = useState('');
   const [update, setUpdate] = useState(1);
 
@@ -33,16 +25,11 @@ export default function EditOdjel(props) {
       document.getElementById('redirect').click();
     }, 2000);
   }
-
-  const myHeaders = new Headers();
-  myHeaders.append('Content-Type', 'application/json');
-  myHeaders.append('authorization', 'Bearer ' + props.user.token);
-
   const { handleChange, values, handleSubmit, errors } = useForm(
     validate,
     idOdjela,
     Success,
-    myHeaders
+    apiInstance
   );
 
   const handleExistingValues = (data) => {
@@ -51,66 +38,54 @@ export default function EditOdjel(props) {
   };
 
   useEffect(() => {
-    fetch(
-      'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Odjel/getSingle.php?id=' +
-        idOdjela,
-      {
-        method: 'GET',
-        mode: 'cors',
-        headers: myHeaders,
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        handleExistingValues(data);
-      });
+    apiInstance.get(`Odjel/getSingle.php?id=${idOdjela}`).then(({ data }) => {
+      handleExistingValues(data);
+    });
   }, []);
 
   return (
     <div className='edit'>
-      <MuiThemeProvider theme={theme}>
-        <Grid item xs>
-          <Paper className='editContainer' elevation={6}>
-            <form onSubmit={handleSubmit}>
-              <Grid container spacing={3}>
-                <Grid item xs>
-                  <TextField
-                    fullWidth='true'
-                    type='text'
-                    name='odjel'
-                    variant='outlined'
-                    label='Naziv odjela'
-                    className='input'
-                    value={values.odjel}
-                    onChange={handleChange}
-                  />
-                  {errors.odjel && (
-                    <FormHelperText className='helperText'>
-                      {errors.odjel}
-                    </FormHelperText>
-                  )}
-                </Grid>
+      <Grid item xs>
+        <Paper className='editContainer' elevation={6}>
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={3}>
+              <Grid item xs>
+                <TextField
+                  fullWidth='true'
+                  type='text'
+                  name='odjel'
+                  variant='outlined'
+                  label='Naziv odjela'
+                  className='input'
+                  value={values.odjel}
+                  onChange={handleChange}
+                />
+                {errors.odjel && (
+                  <FormHelperText className='helperText'>
+                    {errors.odjel}
+                  </FormHelperText>
+                )}
               </Grid>
-              <Link id='redirect' to='/Odjeli-i-Uloge'></Link>
-              <Button
-                id='submitButton'
-                fullWidth='true'
-                type='submit'
-                variant='contained'
-                color='primary'
-                className='input'
-              >
-                Azuriraj odjel
-              </Button>
-              {successMessage && (
-                <FormHelperText className='successText'>
-                  {successMessage}
-                </FormHelperText>
-              )}
-            </form>
-          </Paper>
-        </Grid>
-      </MuiThemeProvider>
+            </Grid>
+            <Link id='redirect' to='/Odjeli-i-Uloge' />
+            <Button
+              id='submitButton'
+              fullWidth='true'
+              type='submit'
+              variant='contained'
+              color='primary'
+              className='input'
+            >
+              Ažuriraj odjel
+            </Button>
+            {successMessage && (
+              <FormHelperText className='successText'>
+                {successMessage}
+              </FormHelperText>
+            )}
+          </form>
+        </Paper>
+      </Grid>
     </div>
   );
 }

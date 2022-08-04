@@ -2,13 +2,13 @@ import { React, useState, useCallback } from 'react';
 import { PieChart, Pie, Sector } from 'recharts';
 
 const getData = (data) => {
-  var numSlobodan = 0;
-  var numZauzet = 0;
+  let numSlobodan = 0;
+  let numZauzet = 0;
   data.forEach((zaposlenik) => {
     if (zaposlenik.slobodan === '1') {
-      numSlobodan++;
+      numSlobodan += 1;
     } else {
-      numZauzet++;
+      numZauzet += 1;
     }
   });
   return [
@@ -94,7 +94,7 @@ const renderActiveShape = (props) => {
   );
 };
 
-export default function PNPie(props) {
+export default function PNPie({ zaposlenici }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const onPieEnter = useCallback(
     (_, index) => {
@@ -103,21 +103,19 @@ export default function PNPie(props) {
     [setActiveIndex]
   );
   return (
-    <>
-      <PieChart width={700} height={400}>
-        <Pie
-          activeIndex={activeIndex}
-          activeShape={renderActiveShape}
-          data={getData(props.zaposlenici)}
-          cx='50%'
-          cy='50%'
-          innerRadius={60}
-          outerRadius={80}
-          fill='#8884d8'
-          dataKey='value'
-          onMouseEnter={onPieEnter}
-        />
-      </PieChart>
-    </>
+    <PieChart width={700} height={400}>
+      <Pie
+        activeIndex={activeIndex}
+        activeShape={renderActiveShape}
+        data={getData(zaposlenici)}
+        cx='50%'
+        cy='50%'
+        innerRadius={60}
+        outerRadius={80}
+        fill='#8884d8'
+        dataKey='value'
+        onMouseEnter={onPieEnter}
+      />
+    </PieChart>
   );
 }

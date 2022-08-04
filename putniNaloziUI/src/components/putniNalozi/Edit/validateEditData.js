@@ -1,5 +1,5 @@
 export default function validateInfo(values) {
-  let errors = {};
+  const errors = {};
   if (!values.polaziste.trim()) {
     errors.polaziste = 'Polaziste je obavezno.';
   }

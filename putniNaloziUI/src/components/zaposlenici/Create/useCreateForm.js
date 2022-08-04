@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useForm = (validate, Success, myHeaders) => {
+const useForm = (validate, Success, apiInstance) => {
   const [values, setValues] = useState({
     ime: '',
     prezime: '',
@@ -22,34 +22,26 @@ const useForm = (validate, Success, myHeaders) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    var error = validate(values);
+    const error = validate(values);
     if (Object.keys(error).length === 0) {
-      const requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: JSON.stringify({
-          ime: values.ime,
-          prezime: values.prezime,
-          korisnickoIme: values.korisnickoIme,
-          odjel: values.odjel,
-          uloga: values.uloga,
-          lozinka: values.lozinka,
-          rola: values.rola,
-        }),
-      };
-      fetch(
-        'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Zaposlenik/create.php',
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((data) => {
+      apiInstance
+        .post(
+          'Zaposlenik/create.php',
+          JSON.stringify({
+            ime: values.ime,
+            prezime: values.prezime,
+            korisnickoIme: values.korisnickoIme,
+            odjel: values.odjel,
+            uloga: values.uloga,
+            lozinka: values.lozinka,
+            rola: values.rola,
+          })
+        )
+        .then(({ data }) => {
           Success(data.message);
         })
-        .catch((error) => {
-          console.log(
-            'There has been a problem with your fetch operation:',
-            error
-          );
+        .catch((err) => {
+          console.log('A problem ocurred whilst creating a new employee:', err);
         });
     }
     setErrors(error);

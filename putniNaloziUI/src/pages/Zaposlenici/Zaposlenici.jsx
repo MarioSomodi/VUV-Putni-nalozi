@@ -1,11 +1,10 @@
 import React from 'react';
 import ZTable from '../../components/zaposlenici/Table/ZTable';
-import './zaposlenici.css';
 
-export default function Zaposlenici(props) {
+export default function Zaposlenici({ user }) {
   return (
     <div className='zaposlenici'>
-      <ZTable user={props.user} />
+      <ZTable user={user} />
     </div>
   );
 }

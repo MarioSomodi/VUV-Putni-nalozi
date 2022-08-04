@@ -1,39 +1,36 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import './sidebar.css';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#5724c7',
-    },
-  },
-});
-
-export default function SidebarMenu(props) {
+export default function SidebarMenu({ title, items }) {
+  const location = useLocation();
   return (
-    <MuiThemeProvider theme={theme}>
-      <div className='sidebarMenu'>
-        <h2 className='sidebarTitle'>{props.title}</h2>
-        <ul className='sidebarList'>
-          {props.items.map((item) => (
-            <Link className='link' to={item.route}>
-              <li className='sidebarListItem'>
-                <Button
-                  type='button'
-                  color='primary'
-                  fullWidth='true'
-                  className=''
-                  startIcon={item.icon}
-                >
-                  {item.label}
-                </Button>
-              </li>
-            </Link>
-          ))}
-        </ul>
-      </div>
-    </MuiThemeProvider>
+    <div className='sidebarMenu'>
+      <h2 className='sidebarTitle'>{title}</h2>
+      <ul className='sidebarList'>
+        {items.map((item) => (
+          <Link key={item.label} className='link' to={item.route}>
+            <li
+              className={
+                item.route === location.pathname
+                  ? 'sidebarListItem active'
+                  : 'sidebarListItem'
+              }
+            >
+              <Button
+                type='button'
+                color='primary'
+                fullWidth='true'
+                className=''
+                startIcon={item.icon}
+              >
+                {item.label}
+              </Button>
+            </li>
+          </Link>
+        ))}
+      </ul>
+    </div>
   );
 }

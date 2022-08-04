@@ -1,12 +1,13 @@
 import { useState } from 'react';
+import { apiInstance } from '../../../api/apiInstance';
 
 const useForm = (validate, Success, Failed) => {
   const [values, setValues] = useState({
-    korisnickoIme: '',
-    ime: '',
-    prezime: '',
-    lozinka: '',
-    lozinka2: '',
+    username: '',
+    name: '',
+    lastname: '',
+    password: '',
+    confirmPassword: '',
   });
   const [errors, setErrors] = useState({});
 
@@ -17,26 +18,22 @@ const useForm = (validate, Success, Failed) => {
       [name]: value,
     });
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    var error = validate(values);
+    const error = validate(values);
     if (Object.keys(error).length === 0) {
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          korisnickoIme: values.korisnickoIme,
-          lozinka: values.lozinka,
-          ime: values.ime,
-          prezime: values.prezime,
-        }),
-      };
-      fetch(
-        'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Authorization/register.php',
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((data) => {
+      apiInstance
+        .post(
+          'Authorization/register.php',
+          JSON.stringify({
+            username: values.username,
+            password: values.password,
+            name: values.name,
+            lastname: values.lastname,
+          })
+        )
+        .then(({ data }) => {
           if (data.status === 'false') {
             error.register = data.error;
             Failed(error.register);

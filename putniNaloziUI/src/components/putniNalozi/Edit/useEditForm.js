@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useForm = (validate, id, Success, selected, token) => {
+const useForm = (validate, id, Success, selected, apiInstance) => {
   const [values, setValues] = useState({
     polaziste: '',
     odrediste: '',
@@ -11,10 +11,6 @@ const useForm = (validate, id, Success, selected, token) => {
   });
   const [errors, setErrors] = useState({});
 
-  const myHeaders = new Headers();
-  myHeaders.append('Content-Type', 'application/json');
-  myHeaders.append('authorization', 'Bearer ' + token);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setValues({
@@ -22,45 +18,38 @@ const useForm = (validate, id, Success, selected, token) => {
       [name]: value,
     });
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    var error = validate(values);
+    const error = validate(values);
     if (Object.keys(error).length === 0 && selected.length > 0) {
-      const requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        body: JSON.stringify({
-          idPutnogNaloga: id,
-          polaziste: values.polaziste,
-          odrediste: values.odrediste,
-          svrha: values.svrha,
-          datumOdlaska: values.datumOdlaska,
-          brojDana: values.brojDana,
-          odobreno: values.odobreno,
-          zaposlenici: selected.map((data) => Number(data.value)),
-        }),
-      };
-      fetch(
-        'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/PutniNalog/update.php',
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((data) => {
+      apiInstance
+        .put(
+          'PutniNalog/update.php',
+          JSON.stringify({
+            idPutnogNaloga: id,
+            polaziste: values.polaziste,
+            odrediste: values.odrediste,
+            svrha: values.svrha,
+            datumOdlaska: values.datumOdlaska,
+            brojDana: values.brojDana,
+            odobreno: values.odobreno,
+            zaposlenici: selected.map((data) => Number(data.value)),
+          })
+        )
+        .then(({ data }) => {
           Success(data.message);
         })
-        .catch((error) => {
+        .catch((err) => {
           console.log(
-            'There has been a problem with your fetch operation:',
-            error
+            'A problem ocurred whilst updating travel document:',
+            err
           );
         });
-    } else {
-      if (selected.length === 0) {
-        error.selected = 'Morate odabrati minimalno jednoga zaposlenika.';
-      } else {
-        error.selected = null;
-      }
+    } else if (selected.length === 0) {
+      error.selected = 'Morate odabrati minimalno jednoga zaposlenika.';
     }
+    error.selected = null;
     setErrors(error);
   };
 

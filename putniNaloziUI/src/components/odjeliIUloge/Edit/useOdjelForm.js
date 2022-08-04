@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useForm = (validate, id, Success, myHeaders) => {
+const useForm = (validate, id, Success, apiInstance) => {
   const [values, setValues] = useState({
     odjel: '',
   });
@@ -15,29 +15,21 @@ const useForm = (validate, id, Success, myHeaders) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    var error = validate(values);
+    const error = validate(values);
     if (Object.keys(error).length === 0) {
-      const requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        body: JSON.stringify({
-          id: id,
-          odjel: values.odjel,
-        }),
-      };
-      fetch(
-        'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Odjel/update.php',
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((data) => {
+      apiInstance
+        .put(
+          'Odjel/update.php',
+          JSON.stringify({
+            id: id,
+            odjel: values.odjel,
+          })
+        )
+        .then(({ data }) => {
           Success(data.message);
         })
-        .catch((error) => {
-          console.log(
-            'There has been a problem with your fetch operation:',
-            error
-          );
+        .catch((err) => {
+          console.log('A problem ocurred while updating department:', err);
         });
     }
     setErrors(error);

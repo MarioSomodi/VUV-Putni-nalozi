@@ -1,10 +1,10 @@
 export default function validateInfo(values) {
-  let errors = {};
-  if (!values.korisnickoIme.trim()) {
-    errors.korisnickoIme = 'Korisnicko ime je obavezno.';
+  const errors = {};
+  if (!values.username.trim()) {
+    errors.username = 'Korisničko ime je obavezno.';
   }
-  if (!values.lozinka.trim()) {
-    errors.lozinka = 'Lozinka je obavezna.';
+  if (!values.password.trim()) {
+    errors.password = 'Lozinka je obavezna.';
   }
   return errors;
 }

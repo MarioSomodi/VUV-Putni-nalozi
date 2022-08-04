@@ -1,7 +1,7 @@
 import { React, useState } from 'react';
 import './authentication.css';
-import LoginForm from './Login/loginForm';
 import { motion } from 'framer-motion';
+import LoginForm from './Login/loginForm';
 import SignUpForm from './SignUp/signupForm';
 
 const backdropVariants = {
@@ -15,7 +15,7 @@ const backdropVariants = {
   collapsed: {
     width: '160%',
     borderRadius: '50%',
-    transfrom: 'rotate(60deg)',
+    transform: 'rotate(60deg)',
     height: '505px',
     zIndex: 0,
   },
@@ -27,9 +27,9 @@ const expandingTransition = {
   stiffness: 30,
 };
 
-export default function Authentication(props) {
+export default function Authentication({ Success }) {
   const [isExpanded, setExpanded] = useState(false);
-  const [active, setActive] = useState('signin');
+  const [active, setActive] = useState('signIn');
 
   const playExpandingAnimation = () => {
     setExpanded(true);
@@ -41,13 +41,13 @@ export default function Authentication(props) {
   const switchToSignUp = () => {
     playExpandingAnimation();
     setTimeout(() => {
-      setActive('signup');
+      setActive('signUp');
     }, 400);
   };
   const switchToSignIn = () => {
     playExpandingAnimation();
     setTimeout(() => {
-      setActive('signin');
+      setActive('signIn');
     }, 400);
   };
 
@@ -64,24 +64,21 @@ export default function Authentication(props) {
           />
           <div className='headerContainer'>
             <h2 className='headerText'>
-              {active === 'signin' ? 'Dobrodošli' : 'Kreirajte novi'}
+              {active === 'signIn' ? 'Dobrodošli' : 'Kreirajte novi'}
             </h2>
             <h2 className='headerText'>
-              {active === 'signin' ? 'Nazad' : 'Korisnički racun'}
+              {active === 'signIn' ? 'Nazad' : 'Korisnički račun'}
             </h2>
             <h5 className='smallText'>
-              {active === 'signin'
+              {active === 'signIn'
                 ? 'Prijavite se kako bi nastavili!'
                 : 'Nadamo se da će te uživati u našim uslugama!'}
             </h5>
           </div>
         </div>
         <div className='innerContainer'>
-          {active === 'signin' ? (
-            <LoginForm
-              switchToSignUp={switchToSignUp}
-              Success={props.Success}
-            />
+          {active === 'signIn' ? (
+            <LoginForm switchToSignUp={switchToSignUp} Success={Success} />
           ) : (
             <SignUpForm switchToSignIn={switchToSignIn} />
           )}

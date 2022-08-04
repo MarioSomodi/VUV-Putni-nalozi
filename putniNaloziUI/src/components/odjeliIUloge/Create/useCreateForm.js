@@ -1,14 +1,13 @@
 import { useState } from 'react';
+import { getApiInstance } from '../../../api/apiInstance';
 
 const useForm = (validate, Success, type, token) => {
+  const apiInstance = getApiInstance(token);
+
   const [values, setValues] = useState({
     naziv: '',
   });
   const [errors, setErrors] = useState({});
-
-  const myHeaders = new Headers();
-  myHeaders.append('Content-Type', 'application/json');
-  myHeaders.append('authorization', 'Bearer ' + token);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,37 +18,26 @@ const useForm = (validate, Success, type, token) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    var error = validate(values);
+    const error = validate(values);
     if (Object.keys(error).length === 0) {
-      const url =
+      const url = type === 1 ? 'Odjel/create.php' : 'Uloga/create.php';
+      const toCreate =
         type === 1
-          ? 'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Odjel/create.php'
-          : 'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Uloga/create.php';
-      const requestOptions =
-        type === 1
-          ? {
-              method: 'POST',
-              headers: myHeaders,
-              body: JSON.stringify({
-                odjel: values.naziv,
-              }),
-            }
-          : {
-              method: 'POST',
-              headers: myHeaders,
-              body: JSON.stringify({
-                uloga: values.naziv,
-              }),
-            };
-      fetch(url, requestOptions)
-        .then((response) => response.json())
-        .then((data) => {
+          ? JSON.stringify({
+              odjel: values.naziv,
+            })
+          : JSON.stringify({
+              uloga: values.naziv,
+            });
+      apiInstance
+        .post(url, toCreate)
+        .then(({ data }) => {
           Success(data.message);
         })
-        .catch((error) => {
+        .catch((err) => {
           console.log(
-            'There has been a problem with your fetch operation:',
-            error
+            'There has been a problem with creating an department or role:',
+            err
           );
         });
     }

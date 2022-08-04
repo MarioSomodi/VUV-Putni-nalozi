@@ -1,15 +1,9 @@
 import { React, useEffect, useState } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import Grid from '@material-ui/core/Grid';
-import PropTypes from 'prop-types';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import SearchBar from 'material-ui-search-bar';
-import {
-  createMuiTheme,
-  MuiThemeProvider,
-  makeStyles,
-  useTheme,
-} from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
   Delete,
   Edit,
@@ -36,6 +30,7 @@ import {
 } from '@material-ui/core';
 import './table.css';
 import { Link } from 'react-router-dom';
+import { getApiInstance } from '../../../api/apiInstance';
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -43,17 +38,6 @@ const useStyles1 = makeStyles((theme) => ({
     marginLeft: theme.spacing(2.5),
   },
 }));
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#5724c7',
-    },
-    secondary: {
-      main: '#e60505',
-    },
-  },
-});
 
 function TablePaginationActions(props) {
   const classes = useStyles1();
@@ -118,19 +102,13 @@ function TablePaginationActions(props) {
   );
 }
 
-TablePaginationActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onChangePage: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-};
-
-export default function PNTable(props) {
+export default function PNTable({ user }) {
+  const apiInstance = getApiInstance(user.token);
   const [uloge, setUloge] = useState();
   const [stateOfTable, setStateOfTable] = useState(0);
   const [odjeli, setOdjeli] = useState();
-  const [oRowsUloge, setoRowsUloge] = useState();
-  const [oRowsOdjeli, setoRowsOdjeli] = useState();
+  const [rowsUloge, setRowsUloge] = useState();
+  const [rowsOdjeli, setRowsOdjeli] = useState();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searched, setSearched] = useState('');
@@ -138,16 +116,12 @@ export default function PNTable(props) {
   const requestSearch = (searchedVal) => {
     const filteredRows =
       stateOfTable === 1
-        ? oRowsOdjeli.filter((row) => {
-            return `${row.odjel}`
-              .toLowerCase()
-              .includes(searchedVal.toLowerCase());
-          })
-        : oRowsUloge.filter((row) => {
-            return `${row.uloga}`
-              .toLowerCase()
-              .includes(searchedVal.toLowerCase());
-          });
+        ? rowsOdjeli.filter((row) =>
+            `${row.odjel}`.toLowerCase().includes(searchedVal.toLowerCase())
+          )
+        : rowsUloge.filter((row) =>
+            `${row.uloga}`.toLowerCase().includes(searchedVal.toLowerCase())
+          );
     if (stateOfTable === 1) {
       setOdjeli(filteredRows);
     } else {
@@ -173,9 +147,27 @@ export default function PNTable(props) {
     setStateOfTable(event.target.value);
   };
 
-  const myHeaders = new Headers();
-  myHeaders.append('Content-Type', 'application/json');
-  myHeaders.append('authorization', 'Bearer ' + props.user.token);
+  function updateRows() {
+    apiInstance.get('Uloga/getAll.php').then(({ data }) => {
+      setUloge(data);
+      setRowsUloge(data);
+    });
+    apiInstance.get('Odjel/getAll.php').then(({ data }) => {
+      setOdjeli(data);
+      setRowsOdjeli(data);
+    });
+  }
+
+  function handleDelete(id) {
+    let url = '';
+    if (stateOfTable === 1) {
+      url = 'Odjel/delete.php';
+    } else {
+      url = 'Uloga/delete.php';
+    }
+    apiInstance.delete(`${url}?id=${id}`).then(() => updateRows());
+  }
+
   useEffect(() => {
     updateRows();
   }, []);
@@ -185,8 +177,8 @@ export default function PNTable(props) {
       title: 'Obrisati?',
       message:
         stateOfTable === 1
-          ? 'Sigurno zelite obrisati ovaj odjel?'
-          : 'Sigurno zelite obrisati ovu ulogu?',
+          ? 'Sigurno želite obrisati ovaj odjel?'
+          : 'Sigurno želite obrisati ovu ulogu?',
       buttons: [
         {
           label: 'Da',
@@ -200,214 +192,159 @@ export default function PNTable(props) {
       closeOnClickOutside: true,
     });
   }
-  function handleDelete(id) {
-    var url = '';
-    if (stateOfTable === 1) {
-      url =
-        'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Odjel/delete.php';
-    } else {
-      url =
-        'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Uloga/delete.php';
-    }
-    fetch(url, {
-      method: 'DELETE',
-      mode: 'cors',
-      headers: myHeaders,
-      body: JSON.stringify({
-        id: id,
-      }),
-    })
-      .then((response) => response.json())
-      .then(() => updateRows());
-  }
-
-  function updateRows() {
-    fetch(
-      'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Uloga/getAll.php',
-      {
-        method: 'GET',
-        mode: 'cors',
-        headers: myHeaders,
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setUloge(data);
-        setoRowsUloge(data);
-      });
-    fetch(
-      'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Odjel/getAll.php',
-      {
-        method: 'GET',
-        mode: 'cors',
-        headers: myHeaders,
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setOdjeli(data);
-        setoRowsOdjeli(data);
-      });
-  }
 
   return (
-    <MuiThemeProvider theme={theme}>
-      <Grid container>
-        <Grid item xs>
-          <Paper elevation={6} className='tableContainer'>
-            <TableContainer>
-              {uloge && odjeli && oRowsOdjeli && oRowsUloge && (
-                <>
-                  <FormControl
-                    variant='outlined'
-                    className='input selectData'
+    <Grid container>
+      <Grid item xs>
+        <Paper elevation={6} className='tableContainer'>
+          <TableContainer>
+            {uloge && odjeli && rowsOdjeli && rowsUloge && (
+              <>
+                <FormControl
+                  variant='outlined'
+                  className='input selectData'
+                  fullWidth='true'
+                >
+                  <InputLabel id='labelUlogeIOdjeli'>
+                    Izaberite podatke za prikazati
+                  </InputLabel>
+                  <Select
+                    labelId='labelUlogeIOdjeli'
+                    name='ulogeIOdjeli'
                     fullWidth='true'
+                    value={stateOfTable}
+                    onChange={handleChange}
+                    label='ulogeIOdjeli'
                   >
-                    <InputLabel id='labelUlogeIOdjeli'>
-                      Izaberite podatke za prikazati
-                    </InputLabel>
-                    <Select
-                      labelId='labelUlogeIOdjeli'
-                      name='ulogeIOdjeli'
-                      fullWidth='true'
-                      value={stateOfTable}
-                      onChange={handleChange}
-                      label='ulogeIOdjeli'
-                    >
-                      <MenuItem value={1}>Odjeli</MenuItem>
-                      <MenuItem value={0}>Uloge</MenuItem>
-                    </Select>
-                  </FormControl>
-                  <SearchBar
-                    className='searchBar'
-                    placeholder='Pretraži'
-                    value={searched}
-                    onChange={(searchedVal) => requestSearch(searchedVal)}
-                    onCancelSearch={() => cancelSearch()}
-                  />
-                  <Table aria-label='Zaposlenici tablica'>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell align='left'>R.br.</TableCell>
-                        {stateOfTable && stateOfTable === 1 ? (
-                          <>
-                            <TableCell align='left'>Naziv odjela</TableCell>
-                          </>
-                        ) : (
-                          <>
-                            <TableCell align='left'>Naziv uloge</TableCell>
-                          </>
-                        )}
-                        <TableCell align='center'>Akcije</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
+                    <MenuItem value={1}>Odjeli</MenuItem>
+                    <MenuItem value={0}>Uloge</MenuItem>
+                  </Select>
+                </FormControl>
+                <SearchBar
+                  className='searchBar'
+                  placeholder='Pretraži'
+                  value={searched}
+                  onChange={(searchedVal) => requestSearch(searchedVal)}
+                  onCancelSearch={() => cancelSearch()}
+                />
+                <Table aria-label='Zaposlenici tablica'>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align='left'>R.br.</TableCell>
                       {stateOfTable && stateOfTable === 1 ? (
-                        <>
-                          {(rowsPerPage > 0
-                            ? odjeli.slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage
-                              )
-                            : odjeli
-                          ).map((row, index) => (
-                            <TableRow>
-                              <TableCell component='th' scope='row'>
-                                {index + 1}
-                              </TableCell>
-                              <TableCell align='left'>{row.odjel}</TableCell>
-                              <TableCell align='center'>
-                                {props.user.role === '1' ? (
-                                  <>
-                                    <Link to={'/Odjel/Azuriraj/id/' + row.id}>
-                                      <IconButton color='primary'>
-                                        <Edit />
-                                      </IconButton>
-                                    </Link>
-                                    <IconButton
-                                      onClick={() => handleAlert(row.id)}
-                                      color='primary'
-                                    >
-                                      <Delete />
-                                    </IconButton>
-                                  </>
-                                ) : (
-                                  ''
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </>
+                        <TableCell align='left'>Naziv odjela</TableCell>
                       ) : (
-                        <>
-                          {(rowsPerPage > 0
-                            ? uloge.slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage
-                              )
-                            : uloge
-                          ).map((row, index) => (
-                            <TableRow>
-                              <TableCell component='th' scope='row'>
-                                {index + 1}
-                              </TableCell>
-                              <TableCell align='left'>{row.uloga}</TableCell>
-                              <TableCell align='center'>
-                                {props.user.role === '1' ? (
-                                  <>
-                                    <Link to={'/Uloga/Azuriraj/id/' + row.id}>
-                                      <IconButton color='primary'>
-                                        <Edit />
-                                      </IconButton>
-                                    </Link>
-                                    <IconButton
-                                      onClick={() => handleAlert(row.id)}
-                                      color='primary'
-                                    >
-                                      <Delete />
-                                    </IconButton>
-                                  </>
-                                ) : (
-                                  ''
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </>
+                        <TableCell align='left'>Naziv uloge</TableCell>
                       )}
-                    </TableBody>
-                    <TableFooter>
-                      <TableRow>
-                        <TablePagination
-                          rowsPerPageOptions={[
-                            5,
-                            10,
-                            15,
-                            { label: 'Svi', value: -1 },
-                          ]}
-                          count={
-                            stateOfTable === 1 ? odjeli.length : uloge.length
-                          }
-                          rowsPerPage={rowsPerPage}
-                          page={page}
-                          SelectProps={{
-                            inputProps: { 'aria-label': 'rows per page' },
-                            native: true,
-                          }}
-                          labelRowsPerPage='Broj redova po stranici: '
-                          onChangePage={handleChangePage}
-                          onChangeRowsPerPage={handleChangeRowsPerPage}
-                          ActionsComponent={TablePaginationActions}
-                        />
-                      </TableRow>
-                    </TableFooter>
-                  </Table>
-                </>
-              )}
-            </TableContainer>
-          </Paper>
-        </Grid>
+                      <TableCell align='center'>Akcije</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {stateOfTable && stateOfTable === 1 ? (
+                      <>
+                        {(rowsPerPage > 0
+                          ? odjeli.slice(
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage
+                            )
+                          : odjeli
+                        ).map((row, index) => (
+                          <TableRow>
+                            <TableCell component='th' scope='row'>
+                              {index + 1}
+                            </TableCell>
+                            <TableCell align='left'>{row.odjel}</TableCell>
+                            <TableCell align='center'>
+                              {user.role === '1' ? (
+                                <>
+                                  <Link to={`/Odjel/Azuriraj/id/${row.id}`}>
+                                    <IconButton color='primary'>
+                                      <Edit />
+                                    </IconButton>
+                                  </Link>
+                                  <IconButton
+                                    onClick={() => handleAlert(row.id)}
+                                    color='primary'
+                                  >
+                                    <Delete />
+                                  </IconButton>
+                                </>
+                              ) : (
+                                ''
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </>
+                    ) : (
+                      <>
+                        {(rowsPerPage > 0
+                          ? uloge.slice(
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage
+                            )
+                          : uloge
+                        ).map((row, index) => (
+                          <TableRow>
+                            <TableCell component='th' scope='row'>
+                              {index + 1}
+                            </TableCell>
+                            <TableCell align='left'>{row.uloga}</TableCell>
+                            <TableCell align='center'>
+                              {user.role === '1' ? (
+                                <>
+                                  <Link to={`/Uloga/Azuriraj/id/${row.id}`}>
+                                    <IconButton color='primary'>
+                                      <Edit />
+                                    </IconButton>
+                                  </Link>
+                                  <IconButton
+                                    onClick={() => handleAlert(row.id)}
+                                    color='primary'
+                                  >
+                                    <Delete />
+                                  </IconButton>
+                                </>
+                              ) : (
+                                ''
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </>
+                    )}
+                  </TableBody>
+                  <TableFooter>
+                    <TableRow>
+                      <TablePagination
+                        rowsPerPageOptions={[
+                          5,
+                          10,
+                          15,
+                          { label: 'Svi', value: -1 },
+                        ]}
+                        count={
+                          stateOfTable === 1 ? odjeli.length : uloge.length
+                        }
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        SelectProps={{
+                          inputProps: { 'aria-label': 'rows per page' },
+                          native: true,
+                        }}
+                        labelRowsPerPage='Broj redova po stranici: '
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                        ActionsComponent={TablePaginationActions}
+                      />
+                    </TableRow>
+                  </TableFooter>
+                </Table>
+              </>
+            )}
+          </TableContainer>
+        </Paper>
       </Grid>
-    </MuiThemeProvider>
+    </Grid>
   );
 }

@@ -1,5 +1,5 @@
 export default function validateInfo(values) {
-  let errors = {};
+  const errors = {};
   if (!values.ime.trim()) {
     errors.ime = 'Ime je obavezno.';
   }
@@ -7,7 +7,7 @@ export default function validateInfo(values) {
     errors.prezime = 'Prezime je obavezno.';
   }
   if (!values.korisnickoIme.trim()) {
-    errors.korisnickoIme = 'Korisnicko ime je obavezno.';
+    errors.korisnickoIme = 'Korisničko ime je obavezno.';
   }
   if (!values.odjel.trim()) {
     errors.odjel = 'Morate odabrati odjel.';

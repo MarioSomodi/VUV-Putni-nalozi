@@ -16,18 +16,19 @@
 }
 
 .sidebarTitle {
-  font-size: 13px;
+  font-size: 23px;
+  margin-left:15px;
   color: rgb(138, 130, 130);
 }
 
 .sidebarList {
   list-style: none;
-  padding: 5px;
+  padding: 10px;
 }
 
 .sidebarListItem {
   padding: 5px;
-  margin-top: 15px;
+  margin-top: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;

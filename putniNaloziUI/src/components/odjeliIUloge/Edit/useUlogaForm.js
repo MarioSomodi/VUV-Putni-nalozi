@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useForm = (validate, id, Success, myHeaders) => {
+const useForm = (validate, id, Success, apiInstance) => {
   const [values, setValues] = useState({
     uloga: '',
   });
@@ -15,29 +15,21 @@ const useForm = (validate, id, Success, myHeaders) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    var error = validate(values);
+    const error = validate(values);
     if (Object.keys(error).length === 0) {
-      const requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        body: JSON.stringify({
-          id: id,
-          uloga: values.uloga,
-        }),
-      };
-      fetch(
-        'http://localhost/Mario_Somodi/KV/VUV-Putni-nalozi/putniNaloziAPI/api/Uloga/update.php',
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((data) => {
+      apiInstance
+        .put(
+          'Uloga/update.php',
+          JSON.stringify({
+            id: id,
+            uloga: values.uloga,
+          })
+        )
+        .then(({ data }) => {
           Success(data.message);
         })
-        .catch((error) => {
-          console.log(
-            'There has been a problem with your fetch operation:',
-            error
-          );
+        .catch((err) => {
+          console.log('A problem ocurred while updating role:', err);
         });
     }
     setErrors(error);

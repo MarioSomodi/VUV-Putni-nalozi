@@ -1,5 +1,5 @@
 export default function validateInfo(values) {
-  let errors = {};
+  const errors = {};
   if (!values.uloga.trim()) {
     errors.uloga = 'Ime je obavezno.';
   }

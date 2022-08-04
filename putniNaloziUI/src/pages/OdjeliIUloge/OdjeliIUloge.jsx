@@ -1,11 +1,10 @@
 import React from 'react';
-import './odjeliIUloge.css';
 import OUTable from '../../components/odjeliIUloge/Table/OUTable';
 
-export default function OdjeliIUloge(props) {
+export default function OdjeliIUloge({ user }) {
   return (
     <div className='odjeliIUloge'>
-      <OUTable user={props.user} />
+      <OUTable user={user} />
     </div>
   );
 }
