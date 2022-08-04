@@ -8,29 +8,30 @@ You have to setup a MYSQL database with the SQL for that provided in the root di
 After that you are ready to go.
 ## Live version
 (WIP)
-## Description of the project.
+[VUV Putni nalozi](https://vuvputninalozi.netlify.app)
+## Description of the project
 This is a React web app made for a college course I had. It's a portal where employees can request travel orders for their business trips on the other side there is the administrative side of the app that only employers can get into, it allows employers to approve travel orders, to register new employees into the system and to edit the company hierarchy that is add new roles and departments.
-## Technologies used.
-* HyperText Markup Language (HTML).
-* Javascript (JS).
-* Cascading Style Sheets (CSS).
-* React.
-* JavaScript Object Notation (JSON).
-* PHP : Hypertext Preprocessor.
-* JSON Web Token (JWT).
-* MYSQL database.
-* Material-UI.
-## Things I learned.
+## Technologies used
+* HyperText Markup Language (HTML)
+* Javascript (JS)
+* Cascading Style Sheets (CSS)
+* React
+* JavaScript Object Notation (JSON)
+* PHP : Hypertext Preprocessor
+* JSON Web Token (JWT)
+* MYSQL database
+* Material-UI
+## Things I learned
 * CRUD operations on MYSQL database.
 * Using JWT authentication for the administrative side.
-* React.
+* React
   * Deeper knowledge of functional components.
   * Usage of hooks and custom hooks.
   * Routing.
   * Data binding : one way, two way.
   * Working with material UI components.
   * ...
-* PHP.
+* PHP
   * REST API structure.
   * Config the rest api.
   * Read from MYSQL DB and send the read data in JSON format to the application.
