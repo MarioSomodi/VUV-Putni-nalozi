@@ -25,8 +25,8 @@
 
         public function read(){
             $headers = apache_request_headers();
-            if(isset($headers['authorization'])){
-                $token = str_replace('Bearer ', '', $headers['authorization']);
+        if (isset($headers['authorization']) || isset($headers['Authorization'])) {
+            $token = isset($headers['authorization']) ? str_replace('Bearer ', '', $headers['authorization']) : str_replace('Bearer ', '', $headers['Authorization']);
                 try{
                     $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = '
@@ -54,8 +54,8 @@
 
         public function readSingle(){
             $headers = apache_request_headers();
-            if(isset($headers['authorization'])){
-                $token = str_replace('Bearer ', '', $headers['authorization']);
+        if (isset($headers['authorization']) || isset($headers['Authorization'])) {
+            $token = isset($headers['authorization']) ? str_replace('Bearer ', '', $headers['authorization']) : str_replace('Bearer ', '', $headers['Authorization']);
                 try{
                     $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = '
@@ -93,8 +93,8 @@
 
         public function create(){
             $headers = apache_request_headers();
-            if(isset($headers['authorization'])){
-                $token = str_replace('Bearer ', '', $headers['authorization']);
+        if (isset($headers['authorization']) || isset($headers['Authorization'])) {
+            $token = isset($headers['authorization']) ? str_replace('Bearer ', '', $headers['authorization']) : str_replace('Bearer ', '', $headers['Authorization']);
                 try{
                     $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = 'INSERT INTO '.$this->table.' SET ime = :ime, korisnickoIme = :korisnickoIme, prezime = :prezime, odjel = :odjel, uloga = :uloga, slobodan = 1, rola = :rola, lozinka = :lozinka;';
@@ -164,8 +164,8 @@
 
         public function delete(){
             $headers = apache_request_headers();
-            if(isset($headers['authorization'])){
-                $token = str_replace('Bearer ', '', $headers['authorization']);
+        if (isset($headers['authorization']) || isset($headers['Authorization'])) {
+            $token = isset($headers['authorization']) ? str_replace('Bearer ', '', $headers['authorization']) : str_replace('Bearer ', '', $headers['Authorization']);
                 try{
                     $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = '
@@ -228,8 +228,8 @@
         }
         public function updateAvailable(){
             $headers = apache_request_headers();
-            if(isset($headers['authorization'])){
-                $token = str_replace('Bearer ', '', $headers['authorization']);
+        if (isset($headers['authorization']) || isset($headers['Authorization'])) {
+            $token = isset($headers['authorization']) ? str_replace('Bearer ', '', $headers['authorization']) : str_replace('Bearer ', '', $headers['Authorization']);
                 try{
                     $token = JWT::decode($token, $this->key, array('HS512'));
                     $query = 'UPDATE '.$this->table.' SET slobodan = :slobodan WHERE idZaposlenika = :idZaposlenika;';
@@ -267,4 +267,3 @@
             }
         }
     }
-?>

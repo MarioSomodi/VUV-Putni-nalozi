@@ -6,7 +6,7 @@ header('Access-Control-Allow-Methods: *');
 
 //Include init file.
 include_once('../../core/initialize.php');
-include_once('../helpers\getIdsZaposlenici.php');
+include_once('../helpers/getIdsZaposlenici.php');
 include_once('../helpers/getArrayPutniNalozi.php');
 
 //Instantiate.
