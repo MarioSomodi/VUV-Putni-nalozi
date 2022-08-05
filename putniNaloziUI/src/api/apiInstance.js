@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'http://putni-nalozi-api.herokuapp.com/api/';
+const baseURL = 'https://putni-nalozi-api.herokuapp.com/api/';
 
 const getApiInstance = (jwt) =>
   axios.create({
